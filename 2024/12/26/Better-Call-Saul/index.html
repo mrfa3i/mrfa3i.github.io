@@ -371,10 +371,10 @@
                      
                 >
 
-<p>Here we can see that the mobile app has a button labeled “Call me!” but when you press on it, nothing happens, so based on the challenge description, we conclude that we want to call something, and here there is a <strong>Secret</strong> function. Let’s try to call it.</p>
+<p>Here we can see that the mobile app has a button labeled “Call me!” but when you press on it, nothing happens, so based on the challenge description, we conclude that we want to call something, and here there is a <strong>secret</strong> function. Let’s try to call it.</p>
 <p>To call another function in mobile apps, the exported function must be <strong>true</strong>.</p>
-<p>In <a href="%22https://developer.android.com/guide/topics/manifest/manifest-intro%22"><strong>AndroidManifest.xml</strong></a> the export function set <strong>false</strong></p>
-<p><strong>Note: The manifest file describes essential information about your app</strong></p>
+<p>In <a href="%22https://developer.android.com/guide/topics/manifest/manifest-intro%22"><strong>AndroidManifest.xml</strong></a> the export function is set to <strong>false</strong></p>
+<p><strong>Note: The manifest file describes essential information about your app.</strong></p>
 <img  
                      lazyload
                      src="/images/loading.svg"
@@ -387,7 +387,7 @@
                      data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/secreterror.png"
                      
                 >
-Let's try to patch the application and set the ``exported`` value to ``true``
+Let's try to patch the application and set the <code>exported</code> value to <code>true</code>.
 
 <ol>
 <li><p>Decompile the APK file.</p>
@@ -433,7 +433,7 @@ Let's try to patch the application and set the ``exported`` value to ``true``
                      data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/zipalign.png"
                      
                 >
-Now install ``aligned.apk`` in the device and just call secret 
+Now install <code>aligned.apk</code> on the device and just call secret.
 <img  
                      lazyload
                      src="/images/loading.svg"
