@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Better Call Saul (JUST-Local-CTF)</title>
+    <url>/2024/12/26/Better-Call-Saul%20(JUST-Local-CTF)/</url>
+    <content><![CDATA[<h1 id="Who-You-Gonna-Call-📞"><a href="#Who-You-Gonna-Call-📞" class="headerlink" title="Who You Gonna Call? 📞"></a>Who You Gonna Call? 📞</h1><h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>In the analysis of <code>/images/img/JUST-Local-2024/Who-You-Gonna-Call</code>, we can see that the mobile application was built using a <strong>native C++ library</strong>. This means that the Java or Kotlin code can call functions in the native library through the <strong>Java Native Interface (JNI)</strong>.<br>You can read more about native libraries <a class="link"   href="https://developer.android.com/studio/projects/add-native-code" >here<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i>.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/stringfromJNI.png"
+                     
+                >
+
+<p>There are two classes:</p>
+<ol>
+<li><code>MainActivity</code></li>
+<li><code>Secret</code></li>
+</ol>
+<p>Now let’s run the mobile application using <a class="link"   href="https://developer.android.com/studio?gad_source=1&gclid=EAIaIQobChMIm6zSspzGigMVFaKDBx3tSTRAEAAYASAAEgImlfD_BwE&gclsrc=aw.ds" >Android Studio<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i> to observe its behavior.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/interface.png"
+                     
+                >
+
+<p>We can see that the mobile app has a button labeled <strong>“Call me!”</strong>, but when you press it, nothing happens. Based on the challenge description, we conclude that we are supposed to <strong>call something</strong>—and there’s a class named <code>Secret</code>, which seems like a good candidate. So let’s try to call it.</p>
+<p>To call another class in a mobile app, the <code>exported</code> attribute must be set to <code>true</code>.</p>
+<p>In the <a href="https://developer.android.com/guide/topics/manifest/manifest-intro"><code>AndroidManifest.xml</code></a>, the <code>exported</code> attribute is currently set to <strong>false</strong>.</p>
+<blockquote>
+<p><strong>Note:</strong> The manifest file describes essential information about your app.</p>
+</blockquote>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/androidMainfest.png"
+                     
+                >
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/secreterror.png"
+                     
+                >
+
+<p>Let’s try to patch the application and set <code>exported</code> to <code>true</code>.</p>
+<hr>
+<h3 id="Steps-to-Patch-the-App"><a href="#Steps-to-Patch-the-App" class="headerlink" title="Steps to Patch the App"></a>Steps to Patch the App</h3><ol>
+<li><p><strong>Decompile the APK file.</strong>  </p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/apktool.png"
+                     
+                >
+</li>
+<li><p><strong>Edit <code>AndroidManifest.xml</code>.</strong><br>Open the file in a text editor (e.g., Notepad), and change <code>exported=&quot;false&quot;</code> to <code>exported=&quot;true&quot;</code>.  </p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/secret_xml.png"
+                     
+                >
+</li>
+<li><p><strong>Rebuild the APK.</strong>  </p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/apk-build.png"
+                     
+                >
+</li>
+<li><p><strong>Sign your APK.</strong><br>Android requires that all APK files be digitally <a class="link"   href="https://developer.android.com/studio/publish/app-signing" >signed with a certificate<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i> before they are installed or updated on a device.<br>After modifying the APK, re-sign it with a valid certificate. You can find many tutorials online by searching <code>&quot;how to sign APK&quot;</code>.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/genkey.png"
+                     
+                >
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/jarsigner.png"
+                     
+                >
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/zipalign.png"
+                     
+                ></li>
+</ol>
+<hr>
+<p>Now install <code>aligned.apk</code> on the device and just call the <code>Secret</code> class.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/JUST-Local-2024/Who-You-Gonna-Call/flag.gif"
+                     
+                >
+]]></content>
+      <categories>
+        <category>CTF</category>
+        <category>Mobile Security</category>
+      </categories>
+      <tags>
+        <tag>Mobile</tag>
+        <tag>Android</tag>
+        <tag>apktools</tag>
+        <tag>APK</tag>
+        <tag>JUST-Local-CTF</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Certified Cyber Defender (CCD)</title>
+    <url>/2025/01/29/Certified-Cyber-Defender%20(CCD)/</url>
+    <content><![CDATA[<h2 id="CCD-Overview"><a href="#CCD-Overview" class="headerlink" title="CCD Overview"></a>CCD Overview</h2><p>The CCD certification focuses on active defense, incident response, and threat detection. It offers learners a comprehensive experience that includes simulated attacks, live environments, and threat hunting scenarios. This approach ensures that candidates not only understand cybersecurity concepts but also know how to apply them effectively.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Certified-Cyber-Defender-(CCD)/MOHAMMAD ODEH SHAFEQ ALREFAI_certificate.png"
+                     
+                >
+
+
+<h1 id="Certified-Cyber-Defender-CCD-–-Labs-and-Course-Summary"><a href="#Certified-Cyber-Defender-CCD-–-Labs-and-Course-Summary" class="headerlink" title="Certified Cyber Defender (CCD) – Labs and Course Summary"></a>Certified Cyber Defender (CCD) – Labs and Course Summary</h1><h2 id="Lab-Modules-Key-Skills"><a href="#Lab-Modules-Key-Skills" class="headerlink" title="Lab Modules &amp; Key Skills"></a>Lab Modules &amp; Key Skills</h2><h3 id="Network-Forensics-1-2"><a href="#Network-Forensics-1-2" class="headerlink" title="Network Forensics 1 &amp; 2"></a>Network Forensics 1 &amp; 2</h3><ul>
+<li>Analyze PCAPs across multiple systems.</li>
+<li>Identify indicators of compromise (IOCs), lateral movement, and data exfiltration.</li>
+<li>Investigate command-and-control (C2) communication and attacker infrastructure.</li>
+</ul>
+<h3 id="RITA-Real-Intelligence-Threat-Analytics"><a href="#RITA-Real-Intelligence-Threat-Analytics" class="headerlink" title="RITA (Real Intelligence Threat Analytics)"></a>RITA (Real Intelligence Threat Analytics)</h3><ul>
+<li>Configure and use RITA to detect:<ul>
+<li>DNS tunneling</li>
+<li>Beaconing traffic</li>
+<li>Anomalous patterns</li>
+</ul>
+</li>
+<li>Generate and interpret analytical reports.</li>
+</ul>
+<h3 id="Velociraptor"><a href="#Velociraptor" class="headerlink" title="Velociraptor"></a>Velociraptor</h3><ul>
+<li>Deploy and navigate Velociraptor for endpoint forensics.</li>
+<li>Collect artifacts and memory dumps of compromised systems.</li>
+<li>Use VQL to create custom queries for investigation.</li>
+</ul>
+<h3 id="Evidence-Collection"><a href="#Evidence-Collection" class="headerlink" title="Evidence Collection"></a>Evidence Collection</h3><ul>
+<li>Use KAPE for targeted triage image collection.</li>
+<li>Acquire full memory images on live Windows systems.</li>
+<li>Create disk images with FTK Imager and mount them for analysis.</li>
+</ul>
+<h3 id="Email-Security-Controls"><a href="#Email-Security-Controls" class="headerlink" title="Email Security Controls"></a>Email Security Controls</h3><ul>
+<li>Understand and configure SPF, DKIM, and DMARC.</li>
+<li>Test email authentication mechanisms.</li>
+<li>Learn how these protocols prevent spoofing and phishing.</li>
+</ul>
+<h3 id="Suricata-IDS"><a href="#Suricata-IDS" class="headerlink" title="Suricata IDS"></a>Suricata IDS</h3><ul>
+<li>Configure Suricata and analyze alerts.</li>
+<li>Correlate PCAP data with Suricata signatures.</li>
+<li>Write and test custom IDS rules to detect specific threats.</li>
+</ul>
+<h3 id="USB-Forensics"><a href="#USB-Forensics" class="headerlink" title="USB Forensics"></a>USB Forensics</h3><ul>
+<li>Detect and investigate USB device activity.</li>
+<li>Analyze registry hives, system logs, and image evidence to uncover data theft.</li>
+<li>Reconstruct user behavior and file transfer timelines.</li>
+</ul>
+<h3 id="Memory-Forensics"><a href="#Memory-Forensics" class="headerlink" title="Memory Forensics"></a>Memory Forensics</h3><ul>
+<li>Perform memory analysis using tools like Volatility.</li>
+<li>Discover persistence mechanisms, injected processes, and malicious network connections.</li>
+<li>Analyze dumped memory for malware signatures and lateral movement.</li>
+</ul>
+<h3 id="Disk-Forensics"><a href="#Disk-Forensics" class="headerlink" title="Disk Forensics"></a>Disk Forensics</h3><ul>
+<li>Investigate compromised disk images.</li>
+<li>Analyze file systems, event logs, prefetch files, and malware artifacts.</li>
+<li>Track persistence and privilege escalation techniques.</li>
+</ul>
+<h3 id="Network-Threat-Hunting-1-2"><a href="#Network-Threat-Hunting-1-2" class="headerlink" title="Network Threat Hunting 1 &amp; 2"></a>Network Threat Hunting 1 &amp; 2</h3><ul>
+<li>Engage in hypothesis-driven hunting.</li>
+<li>Discover stealthy threats via log and traffic analysis.</li>
+<li>Correlate host and network data to uncover hidden attacker activity.</li>
+</ul>
+<h3 id="Endpoint-Threat-Hunting-1-2"><a href="#Endpoint-Threat-Hunting-1-2" class="headerlink" title="Endpoint Threat Hunting 1 &amp; 2"></a>Endpoint Threat Hunting 1 &amp; 2</h3><ul>
+<li>Examine how APT groups maintain long-term access to endpoints.</li>
+<li>Investigate persistence, lateral movement, and attacker tradecraft on compromised systems.</li>
+<li>Use EDR tools to track and analyze suspicious behaviors.</li>
+</ul>
+<h3 id="Canary-Tokens"><a href="#Canary-Tokens" class="headerlink" title="Canary Tokens"></a>Canary Tokens</h3><ul>
+<li>Create and deploy honeytokens to detect unauthorized access.</li>
+<li>Learn deception techniques for early breach detection.</li>
+</ul>
+<h3 id="OSSEC-Host-Based-IDS"><a href="#OSSEC-Host-Based-IDS" class="headerlink" title="OSSEC (Host-Based IDS)"></a>OSSEC (Host-Based IDS)</h3><ul>
+<li>Configure OSSEC for HIDS.</li>
+<li>Detect web shells, backdoors, and suspicious privilege escalations.</li>
+</ul>
+<h3 id="Nessus"><a href="#Nessus" class="headerlink" title="Nessus"></a>Nessus</h3><ul>
+<li>Perform vulnerability assessments.</li>
+<li>Run credentialed&#x2F;uncredentialed scans.</li>
+<li>Generate actionable reports for remediation.</li>
+</ul>
+<h3 id="Elastic-SIEM"><a href="#Elastic-SIEM" class="headerlink" title="Elastic SIEM"></a>Elastic SIEM</h3><ul>
+<li>Use Kibana and Elasticsearch for log correlation.</li>
+<li>Build dashboards, visualize data, and create detection rules.</li>
+<li>Map detections to the MITRE ATT&amp;CK framework.</li>
+</ul>
+<h3 id="Sysmon"><a href="#Sysmon" class="headerlink" title="Sysmon"></a>Sysmon</h3><ul>
+<li>Customize Sysmon configurations.</li>
+<li>Monitor file execution, process creation, and network connections.</li>
+<li>Write detection rules based on EventTypes.</li>
+</ul>
+<h3 id="GoPhish"><a href="#GoPhish" class="headerlink" title="GoPhish"></a>GoPhish</h3><ul>
+<li>Launch phishing simulations.</li>
+<li>Create awareness campaigns and monitor user behavior.</li>
+<li>Analyze results to measure susceptibility and training needs.</li>
+</ul>
+<h2 id="Course-Structure-Progress"><a href="#Course-Structure-Progress" class="headerlink" title="Course Structure &amp; Progress"></a>Course Structure &amp; Progress</h2><table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Progress</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Course Introduction</td>
+<td>4 &#x2F; 4</td>
+</tr>
+<tr>
+<td>Course Navigation</td>
+<td>3 &#x2F; 3</td>
+</tr>
+<tr>
+<td>Network Forensics</td>
+<td>25 &#x2F; 25</td>
+</tr>
+<tr>
+<td>Forensics Evidence Collection</td>
+<td>28 &#x2F; 28</td>
+</tr>
+<tr>
+<td>Disk Forensics</td>
+<td>98 &#x2F; 98</td>
+</tr>
+<tr>
+<td>Memory Forensics</td>
+<td>44 &#x2F; 44</td>
+</tr>
+<tr>
+<td>Threat Hunting</td>
+<td>45 &#x2F; 45</td>
+</tr>
+<tr>
+<td>Security Operations Fundamentals</td>
+<td>51 &#x2F; 51</td>
+</tr>
+<tr>
+<td>Incident Response</td>
+<td>63 &#x2F; 63</td>
+</tr>
+<tr>
+<td>Perimeter Defense (Email Security)</td>
+<td>52 &#x2F; 52</td>
+</tr>
+</tbody></table>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The Certified Cyber Defender (CCD) certification emphasizes real-world applicability, not just theory. By completing a wide range of labs—from network traffic analysis to endpoint forensics, and from SIEM detection engineering to USB and phishing investigation—you gain critical defensive skills to:</p>
+<ul>
+<li>Detect and mitigate attacks  </li>
+<li>Understand attacker tactics and techniques  </li>
+<li>Respond effectively to incidents  </li>
+<li>Hunt down threats across the enterprise environment</li>
+</ul>
+<p>This training sets a strong foundation for roles such as:</p>
+<ul>
+<li>SOC Analyst (L1–L2)</li>
+<li>Cyber Threat Hunter</li>
+<li>Incident Responder</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Certifications</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Hourglass (UOFTCTF-2024)</title>
+    <url>/2024/01/15/Hourglass%20(UOFTCTF-2024)/</url>
+    <content><![CDATA[<h2 id="Hourglass-Challenge-Write-up"><a href="#Hourglass-Challenge-Write-up" class="headerlink" title="Hourglass Challenge Write-up"></a>Hourglass Challenge Write-up</h2><h3 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview"></a>Challenge Overview</h3><p>This challenge involved analyzing a forensic image of a workstation suspected of malicious activity. There was no Endpoint Detection and Response (EDR) agent running, which made traditional dynamic monitoring impossible. The goal was to identify recently created or renamed files that could indicate attacker activity.</p>
+<p>A key focus was on understanding how to extract file activity metadata from NTFS, specifically using the <strong>$UsnJrnl</strong> (Update Sequence Number Journal), which records detailed file system changes such as creations, deletions, and renames.</p>
+<hr>
+<h3 id="Tools-and-References"><a href="#Tools-and-References" class="headerlink" title="Tools and References"></a>Tools and References</h3><ul>
+<li><p>Understanding the <strong>NTFS $UsnJrnl</strong> is crucial. I recommend this detailed article for context:<br><a class="link"   href="https://www.orionforensics.com/forensics-tools/ntfs-journal-viewer-jv/" >NTFS $UsnJrnl Overview<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+</li>
+<li><p>The NTFS $UsnJrnl files reside in the <code>$Extend\$UsnJrnl</code> directory, primarily the <code>$J</code> file which contains the journal data.</p>
+</li>
+<li><p>The <strong>MFTCmd</strong> and <strong>Timeline Explorer</strong> tools by Eric Zimmerman were used to parse and analyze the journal data:<br><a class="link"   href="https://ericzimmerman.github.io/#!index.md" >Eric Zimmerman’s Tools<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+</li>
+</ul>
+<hr>
+<h3 id="Step-by-Step-Solution"><a href="#Step-by-Step-Solution" class="headerlink" title="Step-by-Step Solution"></a>Step-by-Step Solution</h3><h4 id="1-Extract-the-UsnJrnl-J-file"><a href="#1-Extract-the-UsnJrnl-J-file" class="headerlink" title="1. Extract the $UsnJrnl $J file"></a>1. Extract the $UsnJrnl <code>$J</code> file</h4><p>From the forensic image, locate and extract the <code>$Extend\$UsnJrnl\$J</code> file, which contains the journal of NTFS file activity.</p>
+<h4 id="2-Parse-the-UsnJrnl-data-using-MFTCmd"><a href="#2-Parse-the-UsnJrnl-data-using-MFTCmd" class="headerlink" title="2. Parse the $UsnJrnl data using MFTCmd"></a>2. Parse the $UsnJrnl data using MFTCmd</h4><p>Using <strong>MFTCmd</strong>, parse the <code>$J</code> file to convert the raw journal data into a CSV format. This CSV includes detailed entries about file operations such as creations, renames, and deletions, along with timestamps and other metadata.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/6.webp"
+                      alt="NTFS $UsnJrnl path and files overview" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/7.webp"
+                      alt="Parsing $UsnJrnl $J file with MFTCmd tool" 
+                >
+
+<h4 id="3-Load-the-CSV-into-Timeline-Explorer"><a href="#3-Load-the-CSV-into-Timeline-Explorer" class="headerlink" title="3. Load the CSV into Timeline Explorer"></a>3. Load the CSV into Timeline Explorer</h4><p>Import the generated CSV file into <strong>Timeline Explorer</strong> for easier visualization and filtering of the file activity timeline.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/8.webp"
+                      alt="Viewing $UsnJrnl entries in Timeline Explorer" 
+                >
+
+<h4 id="4-Identify-newly-created-or-renamed-files"><a href="#4-Identify-newly-created-or-renamed-files" class="headerlink" title="4. Identify newly created or renamed files"></a>4. Identify newly created or renamed files</h4><p>Using Timeline Explorer:</p>
+<ul>
+<li>Search for recently created files by filtering on the “Update Reason” column.</li>
+<li>Focus on entries labeled as <strong>RenameOldName</strong> to track file rename events.</li>
+</ul>
+<h4 id="5-Investigate-suspicious-file-rename-entries"><a href="#5-Investigate-suspicious-file-rename-entries" class="headerlink" title="5. Investigate suspicious file rename entries"></a>5. Investigate suspicious file rename entries</h4><p>Two key entries were identified by their <strong>Entry Numbers</strong>:</p>
+<ul>
+<li><p>Entry Number <strong>111631</strong> corresponded to a file initially named <strong>“New Text Document.txt”</strong>. Further inspection revealed it was renamed to:</p>
+<p><strong><code>/Users/analyst/Desktop/flag.txt.txt</code></strong></p>
+<p>This file contained a decoy or fake flag.</p>
+</li>
+</ul>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/9.webp"
+                      alt="Filter for entry number 111631 showing renamed file" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/10.webp"
+                      alt="Contents of the fake flag.txt file" 
+                >
+
+<ul>
+<li><p>Entry Number <strong>36441</strong> corresponded to another renamed file located at:</p>
+<p><strong><code>/Windows/DiagTrack/Settings/settings.txt</code></strong></p>
+</li>
+</ul>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/11.webp"
+                      alt="Filter for entry number 36441 showing renamed file" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/12.webp"
+                      alt="Base64 string found inside settings.txt file" 
+                >
+
+<h4 id="6-Extract-and-decode-the-hidden-flag"><a href="#6-Extract-and-decode-the-hidden-flag" class="headerlink" title="6. Extract and decode the hidden flag"></a>6. Extract and decode the hidden flag</h4><p>The <code>settings.txt</code> file contained the following Base64-encoded string:</p>
+<p><code>Ky0tCiB1b2Z0Y3Rme1Q0c0tfU2NoM0R1bDNyX0ZVTn0KKy0t</code></p>
+<p>After decoding the string, the real flag was revealed:</p>
+<p><strong>uoftctf{T4sK_Sch3Dul3r_FUN}</strong></p>
+<hr>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>By leveraging the NTFS $UsnJrnl journal and Eric Zimmerman’s forensic tools, I was able to efficiently track recent file changes and uncover the attacker’s true flag hidden in a renamed settings file. This challenge highlights the power of NTFS journaling in forensic investigations to track file system events even without active monitoring agents.</p>
+<hr>
+]]></content>
+      <categories>
+        <category>CTF</category>
+        <category>Digital Forensics</category>
+      </categories>
+      <tags>
+        <tag>Forensics</tag>
+        <tag>EricZimmerman</tag>
+        <tag>NTFS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mobile Application Penetration Tester (eMAPT)</title>
+    <url>/2025/07/16/Mobile-Application-Penetration-Tester%20(eMAPT)/</url>
+    <content><![CDATA[<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p><strong>eMAPT</strong> is a hands-on, professional certification focused on identifying and exploiting security vulnerabilities in Android and iOS applications. It proves your ability to assess, exploit, and report vulnerabilities in real-world mobile apps across both platforms.</p>
+<p>A certification holder demonstrates expertise in:</p>
+<ul>
+<li>Reverse engineering</li>
+<li>Static, dynamic, and runtime analysis</li>
+<li>Network analysis</li>
+<li>Threat modeling and mobile malware assessment</li>
+</ul>
+<hr>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Mobile-Application-Penetration-Tester-(eMAPT)/emapt-cert.png"
+                     
+                >
+
+<h2 id="About-the-Certification"><a href="#About-the-Certification" class="headerlink" title="About the Certification"></a>About the Certification</h2><h3 id="Key-Features"><a href="#Key-Features" class="headerlink" title="Key Features"></a>Key Features</h3><ul>
+<li>Hands-on exam based on real-world Android and iOS apps</li>
+<li>Requires the candidate to identify and exploit real vulnerabilities</li>
+<li>Builds on red team skills beyond eJPT and eCPPT certifications</li>
+</ul>
+<h3 id="Ideal-For"><a href="#Ideal-For" class="headerlink" title="Ideal For"></a>Ideal For</h3><p>This certification is ideal for:</p>
+<ul>
+<li>Penetration testers expanding into mobile app testing</li>
+<li>Security analysts focused on mobile threats</li>
+<li>Red teamers incorporating mobile vectors into assessments</li>
+<li>Malware analysts dissecting mobile threats</li>
+<li>Developers aiming to secure mobile codebases</li>
+<li>Cybersecurity consultants advising on mobile risk and compliance</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Certifications</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>No-grep (UOFTCTF-2024)</title>
+    <url>/2024/01/15/No-grep%20(UOFTCTF-2024)/</url>
+    <content><![CDATA[<h2 id="No-grep-Challenge"><a href="#No-grep-Challenge" class="headerlink" title="No grep Challenge"></a>No grep Challenge</h2><h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>After downloading the zip file, I extracted the <strong>ctf_vm.ova</strong> file and then extracted the <strong>ctf_vm0disk001.vmdk</strong> (virtual machine disk) using <strong>WinRAR</strong>.</p>
+<p><strong>Image 1 would appear here</strong> - Add your 1.webp file to `source/images/img/UOFTCTF-2024/` directory</p>
+
+<p>Next, I used <strong>Autopsy</strong> to analyze the disk image.<br>You can download Autopsy here:<br><a class="link"   href="https://www.autopsy.com/download/"  target="_blank" rel="noopener noreferrer">https://www.autopsy.com/download/<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/2.webp"
+                      alt="Autopsy interface showing analysis" 
+                >
+
+<p>The first thing I examined was the <strong>PowerShell history</strong>.</p>
+<p>The <strong>PowerShell history</strong> file path is:</p>
+<p><code>/Users/analyst/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadLine/ConsoleHost_history.txt</code></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/3.webp"
+                      alt="PowerShell history file in Autopsy" 
+                >
+
+<p>Inside, I discovered an interesting <strong>PowerShell script (.ps1)</strong>. Let’s review its contents.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/4.webp"
+                      alt="PowerShell script content showing XOR cipher" 
+                >
+
+<p>The script uses <strong>XOR encryption</strong>, and both the <strong>key</strong> and the <strong>cipher text</strong> were available. Let’s decode it.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/5.webp"
+                      alt="Decoded PowerShell script output" 
+                >
+
+<p>The decoded flag is:</p>
+<p><strong>uoftctf{0dd_w4y_t0_run_pw5h}</strong></p>
+<hr>
+]]></content>
+      <categories>
+        <category>CTF</category>
+        <category>Digital Forensics</category>
+      </categories>
+      <tags>
+        <tag>UOFTCTF-2024</tag>
+        <tag>forensics</tag>
+        <tag>autopsy</tag>
+        <tag>powershell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>P13 (CAT-Reloaded-2023)</title>
+    <url>/2023/07/28/P13%20(CAT-Reloaded-2023)/</url>
+    <content><![CDATA[<h1 id="P13-Challenge-Write-up"><a href="#P13-Challenge-Write-up" class="headerlink" title="P13 Challenge Write-up"></a>P13 Challenge Write-up</h1><h3 id="Question-One"><a href="#Question-One" class="headerlink" title="Question One"></a>Question One</h3><p>Initially, I discovered an encrypted PHP file that actually contained an image embedded inside the PHP code via encryption. I exported this file for further analysis.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/1.webp"
+                      alt="Encrypted PHP file in HTTP traffic" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/2.webp"
+                      alt="Exported encrypted PHP file" 
+                >
+
+<p>The challenge required identifying the script used to encrypt this image.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/3.webp"
+                      alt="Looking for encryption script in traffic" 
+                >
+
+<p>Filtering the PCAP for “data” yielded the following suspicious entry:</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/4.webp"
+                      alt="Suspicious data in PCAP filtered by 'data'" 
+                >
+
+<p>The suspicious name prompted me to conduct OSINT investigation.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/5.webp"
+                      alt="OSINT investigation on suspicious username" 
+                >
+
+<p>Using the <strong>Sherlock</strong> tool, I found the following GitHub repository for user <strong>Cu713</strong>:</p>
+<p><a class="link"   href="https://github.com/Cu713?tab=overview&from=2023-05-01&to=2023-05-31&source=post_page-----7697a0f6edb7--------------------------------"  target="_blank" rel="noopener noreferrer">Cu713 GitHub Profile<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/6.webp"
+                      alt="Cu713 GitHub profile" 
+                >
+
+<p>I discovered three commits related to encryption scripts:</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/7.webp"
+                      alt="Three commits found in Cu713 GitHub repo" 
+                >
+
+<p>The relevant encryption script commit was:</p>
+<p><a class="link"   href="https://github.com/Cu713/Secr3t/commit/d3c2ff53863d0fcc6f55c79d0d6799d40ca92820?source=post_page-----7697a0f6edb7--------------------------------"  target="_blank" rel="noopener noreferrer">Cu713&#x2F;Secr3t Commit d3c2ff5<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+<hr>
+<h3 id="Question-Two"><a href="#Question-Two" class="headerlink" title="Question Two"></a>Question Two</h3><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/8.webp"
+                      alt="Python script used for decrypting the encrypted image" 
+                >
+
+<p>I reversed the following Python script:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">unswap</span>(<span class="params">bytearray_</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(bytearray_) &lt; <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> bytearray_</span><br><span class="line"></span><br><span class="line">    result = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(bytearray_) - <span class="number">1</span>, <span class="number">2</span>):</span><br><span class="line">        result.extend([bytearray_[i+<span class="number">1</span>], bytearray_[i]])</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(bytearray_) % <span class="number">2</span> == <span class="number">1</span>:</span><br><span class="line">        result.append(bytearray_[-<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bytearray</span>(result)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dec</span>(<span class="params">file</span>):</span><br><span class="line">    key = [<span class="number">255</span>, <span class="number">216</span>, <span class="number">255</span>, <span class="number">224</span>]  <span class="comment"># &#123;FF D8 FF E0&#125; 00 10 4A 46 49 46 00 01 , key = file[:4], .jpeg header</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;key =&quot;</span>, key, sep=<span class="string">&quot;&quot;</span>)</span><br><span class="line">    decrypted = <span class="built_in">bytearray</span>()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>, <span class="built_in">len</span>(file)):</span><br><span class="line">        decrypted.append(file[i] ^ key[(i-<span class="number">4</span>) % <span class="built_in">len</span>(key)])</span><br><span class="line">    <span class="keyword">return</span> decrypted</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;panel.php&quot;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    file_content = f.read()</span><br><span class="line"></span><br><span class="line">unswapped_encrypted = unswap(file_content)</span><br><span class="line">decrypted = dec(unswapped_encrypted)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;dec&quot;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(decrypted)</span><br></pre></td></tr></table></figure></div>
+
+<p><code>**Note**: Don’t forget to delete the &quot;headers&quot; and &quot;data&quot; from the PHP file before running the script.</code></p>
+<p>After running the script, I obtained:</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/9.webp"
+                      alt="Result after running the Python decrypt script" 
+                >  
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/10.webp"
+                      alt="Corrupted decrypted file output" 
+                >
+
+<p>The decrypted file was corrupted, so I manually edited it by inserting 8 bytes at the beginning and deleting 4 bytes at the end to restore a valid JPEG format.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/11.webp"
+                      alt="Editing the corrupted JPEG file header" 
+                >  
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/12.webp"
+                      alt="Deleting corrupted bytes at file end" 
+                >
+
+<p>After the fix, I obtained a valid image:</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/CAT-Reloaded-2023/13.webp"
+                      alt="Valid decrypted JPEG image" 
+                >
+
+<p>Using Google Lens, I identified the location in the image as Dublin.</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><figcaption><span>Flag</span></figcaption><table><tr><td class="code"><pre><span class="line">CATF&#123;https://github.com/Cu713/Secr3t/commit/d3c2ff53863d0fcc6f55c79d0d6799d40ca92820_Dublin&#125;</span><br></pre></td></tr></table></figure></div>]]></content>
+      <categories>
+        <category>CTF</category>
+        <category>Network Forensics</category>
+        <category>OSINT</category>
+      </categories>
+      <tags>
+        <tag>network</tag>
+        <tag>osint</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TrueSecret (HackTheBox)</title>
+    <url>/2023/04/19/True-Secret%20(HackTheBox)/</url>
+    <content><![CDATA[<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Step-1-Identify-the-memory-profile"><a href="#Step-1-Identify-the-memory-profile" class="headerlink" title="Step 1: Identify the memory profile"></a>Step 1: Identify the memory profile</h3><p>I first wanted to determine which <strong>Volatility profile</strong> was suitable for this memory image.</p>
+<hr>
+<h3 id="Step-2-Locate-interesting-files-in-memory"><a href="#Step-2-Locate-interesting-files-in-memory" class="headerlink" title="Step 2: Locate interesting files in memory"></a>Step 2: Locate interesting files in memory</h3><p>While searching the memory dump files, I found an interesting archive named <code>backup_development.zip</code>.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/1.webp"
+                      alt="Located backup_development.zip in memory" 
+                >
+
+<hr>
+<h3 id="Step-3-Dump-and-examine-the-zip-file"><a href="#Step-3-Dump-and-examine-the-zip-file" class="headerlink" title="Step 3: Dump and examine the zip file"></a>Step 3: Dump and examine the zip file</h3><p>Using the <strong>dumpfiles</strong> plugin in Volatility, I extracted the <code>.zip</code> file to see its contents.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/2.webp"
+                      alt="Dumping the zip file from memory image" 
+                >
+
+<p>After extraction, I discovered a <code>.tc</code> file – a <strong>TrueCrypt container</strong>.</p>
+<hr>
+<h3 id="Step-4-Mount-the-TrueCrypt-volume"><a href="#Step-4-Mount-the-TrueCrypt-volume" class="headerlink" title="Step 4: Mount the TrueCrypt volume"></a>Step 4: Mount the TrueCrypt volume</h3><p>To mount this file, I used <strong>VeraCrypt</strong>, which prompted me for a password.</p>
+<p>I retrieved the password using Volatility’s <code>truecryptpassphrase</code> plugin.</p>
+<p>Download VeraCrypt here:<br><a class="link"   href="https://veracrypt.eu/en/Downloads.html"  target="_blank" rel="noopener noreferrer">https://veracrypt.eu/en/Downloads.html<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/3.webp"
+                      alt="Using truecryptpassphrase plugin in Volatility" 
+                >  
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/4.webp"
+                      alt="Password recovered for TrueCrypt volume" 
+                >
+
+<p>Then, I mounted the volume with VeraCrypt using the discovered password.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/5.webp"
+                      alt="Mounted VeraCrypt container" 
+                >  
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/6.webp"
+                      alt="Accessing mounted volume contents" 
+                >
+
+<hr>
+<h3 id="Step-5-Analyze-the-contents-of-the-mounted-volume"><a href="#Step-5-Analyze-the-contents-of-the-mounted-volume" class="headerlink" title="Step 5: Analyze the contents of the mounted volume"></a>Step 5: Analyze the contents of the mounted volume</h3><p>Inside the mounted disk, I found a folder named <strong><code>malware_agent</code></strong>. It contained:</p>
+<ul>
+<li>One C# encryption script  </li>
+<li>Three encrypted files (DES-encrypted)</li>
+</ul>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/7.webp"
+                      alt="malware_agent folder contents" 
+                >
+
+<hr>
+<h3 id="Step-6-Decrypt-the-files"><a href="#Step-6-Decrypt-the-files" class="headerlink" title="Step 6: Decrypt the files"></a>Step 6: Decrypt the files</h3><p>The C# script provided the <code>iv</code> and <code>key</code> used for DES encryption.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/8.webp"
+                      alt="C# script showing IV and Key for DES decryption" 
+                >
+
+<p>To decrypt the files, I used an online DES tool:<br><a class="link"   href="https://devtoolcafe.com/tools/des"  target="_blank" rel="noopener noreferrer">https://devtoolcafe.com/tools/des<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+<blockquote>
+<p><strong>Note:</strong> Decrypt each file <strong>line by line</strong>.</p>
+</blockquote>
+<hr>
+<h3 id="Decryption-Results"><a href="#Decryption-Results" class="headerlink" title="Decryption Results"></a>Decryption Results</h3><h4 id="File-1"><a href="#File-1" class="headerlink" title="File 1:"></a>File 1:</h4><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/9.webp"
+                      alt="Decryption result of file 1" 
+                >
+
+<h4 id="File-2"><a href="#File-2" class="headerlink" title="File 2:"></a>File 2:</h4><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/10.webp"
+                      alt="Decryption result of file 2" 
+                >
+
+<h4 id="File-3-contains-the-flag"><a href="#File-3-contains-the-flag" class="headerlink" title="File 3 (contains the flag):"></a>File 3 (contains the flag):</h4><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/11.webp"
+                      alt="Decryption result of file 3" 
+                >
+
+<p>And finally, I found the flag in the third file:</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/HTB/TrueSecret/12.webp"
+                      alt="Flag discovered in decrypted file 3" 
+                >
+]]></content>
+      <categories>
+        <category>HackTheBox</category>
+        <category>Digital Forensics</category>
+        <category>Memory Analysis</category>
+      </categories>
+      <tags>
+        <tag>forensics</tag>
+        <tag>HTB</tag>
+        <tag>memory</tag>
+        <tag>veracrypt</tag>
+      </tags>
+  </entry>
+</search>
