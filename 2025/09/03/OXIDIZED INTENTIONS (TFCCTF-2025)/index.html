@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="mrfa3i">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2025/09/03/oxidized intentions (thefewchosen-2025)/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="Descriptions1Can you find what lays behind this simple game ?  Attachments:   app-release.apk  Challenge Overview:The Android application is built with a native library for ARM processors and is writt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OXIDIZED INTENTIONS (TFCCTF-2025)">
+<meta property="og:url" content="http://example.com/2025/09/03/OXIDIZED%20INTENTIONS%20(thefewchosen-2025)/index.html">
+<meta property="og:site_name" content="mrfa3i">
+<meta property="og:description" content="Descriptions1Can you find what lays behind this simple game ?  Attachments:   app-release.apk  Challenge Overview:The Android application is built with a native library for ARM processors and is writt">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/1.png">
+<meta property="og:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/2.png">
+<meta property="og:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/4.png">
+<meta property="og:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/5.png">
+<meta property="og:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/8.png">
+<meta property="og:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/9.png">
+<meta property="article:published_time" content="2025-09-02T21:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-03T01:30:44.871Z">
+<meta property="article:author" content="Mohammad Al-Refai">
+<meta property="article:tag" content="Mobile">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="apktools">
+<meta property="article:tag" content="ida">
+<meta property="article:tag" content="Reverse">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/1.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            OXIDIZED INTENTIONS (thefewchosen-2025) | Mohammad Al-Refai
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/build/css/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"mrfa3i Blog","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/mrfa3i","instagram":null,"zhihu":null,"twitter":null,"email":"refaim643@gmail.com","linkedin":"https://www.linkedin.com/in/mohammad-al-refai-a1602122a/"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.8.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"path":"/about","icon":"fa-regular fa-user"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":{"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"path":"/about","icon":"fa-regular fa-user"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}}},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Mohammad Al-Refai
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/about"
+                                        >
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    ABOUT
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/about"
+                        >
+                            <span>
+                                ABOUT
+                            </span>
+                            
+                                <i class="fa-regular fa-user fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+                
+                    
+                    
+                    
+                    
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/tags"
+                        >
+                            <span>Tags</span>
+                            <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                        </a>
+                    </li>
+                
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">10</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">8</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">OXIDIZED INTENTIONS (thefewchosen-2025)</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/redefine-avatar.svg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">mrfa3i</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv2</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2025-09-03</span>
+        <span class="mobile">2025-09-03</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-09-03 04:30:44</span>
+            <span class="mobile">2025-09-03 04:30:44</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/CTF/">CTF</a>&nbsp;
+                        </li>
+                    
+                    
+                
+                    
+                        
+                            <li>></li>
+                        
+                        <li>
+                            <a href="/categories/CTF/Mobile/">Mobile</a>&nbsp;
+                        </li>
+                    
+                    
+                
+                    
+                        
+                            <li>></li>
+                        
+                        <li>
+                            <a href="/categories/CTF/Mobile/Reverse/">Reverse</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Mobile/">Mobile</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Android/">Android</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/apktools/">apktools</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ida/">ida</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Reverse/">Reverse</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<h1 id="Descriptions"><a href="#Descriptions" class="headerlink" title="Descriptions"></a>Descriptions</h1><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Can you find what lays behind this simple game ?</span><br></pre></td></tr></table></figure></div>
+
+<p>Attachments: </p>
+<ul>
+<li>app-release.apk</li>
+</ul>
+<h2 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview:"></a>Challenge Overview:</h2><p>The Android application is built with a native library for ARM processors and is written in <strong>Kotlin</strong>, so you need to run it on an <strong><code>arm64-v8a</code></strong> environment to execute the app properly. From there, you can interact with the application and analyze how it actually works.</p>
+<p>So, I ended up running the application on my personal phone because I couldn’t find an ARM emulator in Android Studio 😅.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/1.png"
+                     
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/2.png"
+                     
+                ></p>
+<p>Basically, the app is a simple game with a <strong>score</strong> system and <strong>3 lives</strong>. When digging into the APK, I noticed two important things:</p>
+<ol>
+<li><p>The app loads a native library:<br> <code>arm64-v8a/liboxi.so</code></p>
+</li>
+<li><p>In the <strong><code>AndroidManifest.xml</code></strong>, there is an <strong>exported broadcast receiver</strong> that we can abuse:</p>
+ <div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TicketReceiver&quot;</span> <span class="attr">android:exported</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TICKET&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p> Because <code>android:exported=&quot;true&quot;</code> is set, this means any external app (or even <code>adb</code>) can send an intent with the action <strong><code>com.example.oxidized_intentions.TICKET</code></strong> and trigger the receiver.</p>
+</li>
+</ol>
+<h2 id="Source-Code-Analysis"><a href="#Source-Code-Analysis" class="headerlink" title="Source Code Analysis"></a>Source Code Analysis</h2><p>Looking into the decompiled source, we see the following relevant pieces:</p>
+<p><strong>Native class</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Native</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> Native INSTANCE = new Native();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JvmStatic</span></span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> native String getFlag(Context context, String str, String str2, int i);</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">&quot;oxi&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>This shows that the actual <strong>flag generation logic is hidden inside the native library <code>liboxi.so</code></strong> via the function <code>getFlag(...)</code>.</p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>MainActivity</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Nothing too interesting here</p>
+<p><strong>TicketReceiver</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">    String stringExtra = intent.getStringExtra(<span class="string">&quot;seed&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (stringExtra == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;Got broadcast, seed=&quot;</span> + stringExtra);</span><br><span class="line"></span><br><span class="line">    int i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (int i2 = <span class="number">0</span>; i2 &lt; stringExtra.length(); i2++) &#123;</span><br><span class="line">        i ^= stringExtra.charAt(i2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String flag = Native.getFlag(context, stringExtra, PART_J, i &amp; <span class="number">255</span>);</span><br><span class="line"></span><br><span class="line">    Toast.makeText(context, flag, <span class="number">1</span>).show();</span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;FLAG=&quot;</span> + flag);</span><br><span class="line"></span><br><span class="line">    Intent intent2 = new Intent(ACTION_FLAGGED);</span><br><span class="line">    intent2.setPackage(context.getPackageName());</span><br><span class="line">    intent2.putExtra(EXTRA_FLAG, flag);</span><br><span class="line">    context.sendBroadcast(intent2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Here’s what happens inside the <strong><code>TicketReceiver</code></strong>:</p>
+<ol>
+<li><p>It extracts the string extra <code>&quot;seed&quot;</code> from the broadcast intent.</p>
+</li>
+<li><p>If it’s missing, it returns immediately.</p>
+</li>
+<li><p>It logs the seed and computes an integer <code>i</code> by XOR’ing all the characters in the seed.</p>
+</li>
+<li><p>It then calls <code>Native.getFlag(context, seed, PART_J, i &amp; 255)</code> to generate the flag.</p>
+</li>
+<li><p>The flag is shown in a <strong>Toast</strong> and logged.</p>
+</li>
+<li><p>Finally, it broadcasts the flag inside the app.</p>
+</li>
+</ol>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Finding-the-correct-seed"><a href="#Finding-the-correct-seed" class="headerlink" title="Finding  the correct seed"></a>Finding  the correct seed</h3><p>By sending a broadcast with the correct <strong><code>seed</code></strong> value, we can trigger <code>TicketReceiver</code>, which calls into the native library to compute and reveal the flag.</p>
+<p>So now, let’s perform a <strong>static analysis</strong> of the <strong><code>liboxi.so</code></strong> library to figure out how we can determine the correct <strong><code>seed</code></strong>.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/4.png"
+                     
+                ></p>
+<p>Inside the function <strong><code>sub_11A4C</code></strong>, we can see a comparison being made against a hardcoded string located in the <strong><code>.rodata</code></strong> section. If the comparison fails, the code returns <code>FAKE&#123;wrong_seed&#125;</code>, otherwise the execution continues and eventually generates the flag.</p>
+<p>Next, we need to send the correct seed value to the <code>TicketReceiver</code> using the following command:</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed <span class="string">&quot;fe2o3rust&quot;</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/5.png"
+                     
+                ></p>
+<p>Oops! <strong><code>FAKE&#123;2152411021524119&#125;</code></strong> – that’s a fake flag. What went wrong?</p>
+<h3 id="Patching-the-HACKER-Check"><a href="#Patching-the-HACKER-Check" class="headerlink" title="Patching the HACKER Check"></a>Patching the HACKER Check</h3><p>After digging deeper into <strong><code>liboxi.so</code></strong>, I discovered that inside the function <strong><code>sub_11A4C</code></strong> there’s an additional security check: the variable <strong><code>HACKER</code></strong> must be set to <strong><code>HACKER = 1</code></strong>. I realized I could simply patch it to bypass the restriction.</p>
+<ol>
+<li><p>Decompile the APK using Apktool :</p>
+ <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS&gt; apktool d .\app<span class="literal">-release</span>.apk</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 on app-release.apk with 4 thread(s).</span><br><span class="line">I: Baksmaling classes.dex...</span><br><span class="line">I: Baksmaling classes2.dex...</span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding file<span class="literal">-resources</span>...</span><br><span class="line">I: Loading resource table from file: C:\Users\refai\AppData\Local\apktool\framework\<span class="number">1</span>.apk</span><br><span class="line">I: Decoding values */* XMLs...</span><br><span class="line">I: Decoding AndroidManifest.xml with resources...</span><br><span class="line">I: Regular manifest package...</span><br><span class="line">I: Copying assets and libs...</span><br><span class="line">I: Copying unknown files...</span><br><span class="line">I: Copying original files...</span><br><span class="line">I: Copying META<span class="literal">-INF</span>/services directory</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>Analyze <code>liboxi.so</code><br> Open <code>liboxi.so</code> using <strong>Ghidra</strong> or <strong>IntelliJ IDEA</strong> from the path <code>app-release\lib\arm64-v8a</code></p>
+</li>
+<li><p>Patch the security check<br> I modified the bytes from:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> to:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> this changes the instruction from:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">B.NE loc_11EDC   ; E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> to:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">B.EQ loc_11EDC   ; E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> <img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/8.png"
+                     
+                ></p>
+</li>
+<li><p>Rebuild and sign the APK</p>
+<ul>
+<li><p>Rebuild the patched APK using Apktool:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>&gt; apktool b .</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 with 4 thread(s).</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali folder into classes.dex...</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali_classes2 folder into classes2.dex...</span><br><span class="line">I: Checking whether resources has changed...</span><br><span class="line">I: Building resources...</span><br><span class="line">I: Copying libs... (/lib)</span><br><span class="line">I: Copying libs... (/kotlin)</span><br><span class="line">I: Copying libs... (/META<span class="literal">-INF</span>/services)</span><br><span class="line">I: Building apk file...</span><br><span class="line">I: Copying unknown files/<span class="built_in">dir</span>...</span><br><span class="line">I: Built apk into: .\dist\app<span class="literal">-release</span>.apk</span><br></pre></td></tr></table></figure></div></li>
+<li><p>Generate a self-signed certificate and sign the APK:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; keytool <span class="literal">-genkeypair</span> <span class="literal">-v</span> <span class="literal">-keystore</span> android.keystore <span class="literal">-alias</span> research_key <span class="literal">-keyalg</span> RSA <span class="literal">-keysize</span> <span class="number">2048</span> <span class="literal">-validity</span> <span class="number">10000</span></span><br><span class="line">Enter keystore password:  </span><br><span class="line">Re<span class="literal">-enter</span> new password: </span><br><span class="line">Enter the distinguished name. Provide a single dot (.) to leave a sub<span class="literal">-component</span> empty or press ENTER to use the default value <span class="keyword">in</span> braces.</span><br><span class="line">What is your first and last name?</span><br><span class="line">What is the name of your organizational unit?</span><br><span class="line">What is the name of your organization?</span><br><span class="line">What is the name of your City or Locality?</span><br><span class="line">What is the name of your State or Province?</span><br><span class="line">What is the two<span class="literal">-letter</span> country code <span class="keyword">for</span> this unit?</span><br><span class="line">Is CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown correct?</span><br><span class="line">[<span class="type">no</span>]:  yes</span><br><span class="line">Generating <span class="number">2048</span><span class="literal">-bit</span> RSA key pair and self<span class="literal">-signed</span> certificate (SHA384withRSA) with a validity of <span class="number">10</span>,<span class="number">000</span> days</span><br><span class="line">		<span class="keyword">for</span>: CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">[<span class="type">Storing</span> <span class="type">android.keystore</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; jarsigner <span class="literal">-verbose</span> <span class="literal">-sigalg</span> SHA1withRSA <span class="literal">-digestalg</span> SHA1 <span class="literal">-keystore</span> android.keystore .\app<span class="literal">-release</span>.apk research_key</span><br><span class="line">Enter Passphrase <span class="keyword">for</span> keystore: </span><br><span class="line">adding: META<span class="literal">-INF</span>/MANIFEST.MF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.SF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.RSA</span><br><span class="line">signing: AndroidManifest.xml</span><br><span class="line">signing: classes.dex</span><br><span class="line">signing: classes2.dex</span><br><span class="line">signing: kotlin/annotation/annotation.kotlin_builtins</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">&gt;&gt;&gt; Signer</span><br><span class="line">	X.<span class="number">509</span>, CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">	Signature algorithm: SHA384withRSA, <span class="number">2048</span><span class="literal">-bit</span> RSA key</span><br><span class="line">	[<span class="type">trusted</span> <span class="type">certificate</span>]</span><br><span class="line"></span><br><span class="line">jar signed.</span><br><span class="line"></span><br><span class="line">Warning:</span><br><span class="line">The signer<span class="string">&#x27;s certificate is self-signed.</span></span><br><span class="line"><span class="string">The SHA1 algorithm specified for the -digestalg option is considered a security risk and is disabled.</span></span><br><span class="line"><span class="string">The SHA1withRSA algorithm specified for the -sigalg option is considered a security risk and is disabled.</span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+</li>
+<li><p>Optimize and Finalize the APK</p>
+<ul>
+<li><p>Align the APK using zipalign:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; zipalign <span class="literal">-p</span> <span class="operator">-f</span> <span class="literal">-v</span> <span class="number">4</span> .\app<span class="literal">-release</span>.apk aligned.apk</span><br><span class="line">Verifying alignment of aligned.apk (<span class="number">4</span>)...</span><br><span class="line">	<span class="number">50</span> META<span class="literal">-INF</span>/MANIFEST.MF (OK - compressed)</span><br><span class="line">	<span class="number">3343</span> META<span class="literal">-INF</span>/RESEARCH.SF (OK - compressed)</span><br><span class="line">	<span class="number">7084</span> META<span class="literal">-INF</span>/RESEARCH.RSA (OK - compressed)</span><br><span class="line">	<span class="number">8279</span> AndroidManifest.xml (OK - compressed)</span><br><span class="line">	<span class="number">9936</span> classes.dex (OK)</span><br><span class="line"><span class="number">13497788</span> classes2.dex (OK)</span><br><span class="line">.............................</span><br><span class="line">.............................</span><br><span class="line"><span class="number">18380208</span> assets/dexopt/baseline.profm (OK)</span><br><span class="line"><span class="number">18380635</span> DebugProbesKt.bin (OK - compressed)</span><br><span class="line"><span class="number">18381491</span> kotlin<span class="literal">-tooling-metadata</span>.json (OK - compressed)</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>Sign the aligned APK with apksigner:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; apksigner sign <span class="literal">--ks</span> .\android.keystore .\aligned.apk</span><br><span class="line">WARNING: A restricted method <span class="keyword">in</span> java.lang.System has been called</span><br><span class="line">WARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil <span class="keyword">in</span> an unnamed module (file:/C:/Users/refai/AppData/Local/Android/Sdk/<span class="built_in">build-tools</span>/<span class="number">36.0</span>.<span class="number">0</span>/lib/apksigner.jar)</span><br><span class="line">WARNING: Use <span class="literal">--enable-native-access</span>=ALL<span class="literal">-UNNAMED</span> to avoid a warning <span class="keyword">for</span> callers <span class="keyword">in</span> this module</span><br><span class="line">WARNING: Restricted methods will be blocked <span class="keyword">in</span> a future release unless native access is enabled</span><br><span class="line"></span><br><span class="line">Keystore password <span class="keyword">for</span> signer <span class="comment">#1: </span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+</li>
+</ol>
+<p>After patching the APK, reinstall it on the mobile emulator to verify that it no longer displays the fake flag. Use the following command to install the aligned APK:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb install .\aligned.apk</span><br><span class="line">Performing Incremental Install</span><br><span class="line">Serving...</span><br><span class="line">All files should be loaded. Notifying the device.</span><br><span class="line">Success</span><br><span class="line">Install command complete in 2289 ms</span><br></pre></td></tr></table></figure></div>
+
+<p>Next, send the correct seed value to trigger the <code>TicketReceiver</code>:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed &quot;fe2o3rust&quot;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="FLAG"><a href="#FLAG" class="headerlink" title="FLAG"></a>FLAG</h2><p>The app now returns the correct flag:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/9.png"
+                     
+                ></p>
+<p>This confirms that patching the HACKER variable successfully bypassed the security check, allowing the correct seed to produce the real flag.</p>
+<p><strong>FLAG</strong>: <strong><code>TFCCTF&#123;167e3ce3c65387c6e981c31c39ac7839&#125;</code></strong></p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Mobile/">#Mobile</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Android/">#Android</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/apktools/">#apktools</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ida/">#ida</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Reverse/">#Reverse</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/07/16/Mobile-Application-Penetration-Tester%20(eMAPT)/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">Mobile Application Penetration Tester (eMAPT)</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">OXIDIZED INTENTIONS (thefewchosen-2025)</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Descriptions"><span class="nav-text">Descriptions</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Challenge-Overview"><span class="nav-text">Challenge Overview:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Source-Code-Analysis"><span class="nav-text">Source Code Analysis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution"><span class="nav-text">Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Finding-the-correct-seed"><span class="nav-text">Finding  the correct seed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Patching-the-HACKER-Check"><span class="nav-text">Patching the HACKER Check</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAG"><span class="nav-text">FLAG</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">mrfa3i</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        8 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+	<div class="search-pop-overlay">
+	<div class="popup search-popup">
+		<div class="search-header">
+			<span class="search-input-field-pre">
+				<i class="fa-solid fa-keyboard"></i>
+			</span>
+			<div class="search-input-container">
+				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Search..." spellcheck="false" type="search" class="search-input">
+			</div>
+			<span class="popup-btn-close">
+				<i class="fa-solid fa-times"></i>
+			</span>
+		</div>
+		<div id="search-result">
+			<div id="no-result">
+				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+	
+
+</main>
+
+
+
+<script src="/build/js/libs/Swup.min.js"></script>
+
+<script src="/build/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/build/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/build/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/build/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/build/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/build/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/build/js/utils.js" type="module"></script>
+
+<script src="/build/js/main.js" type="module"></script>
+
+<script src="/build/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/build/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/build/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/build/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/build/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/build/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/build/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/build/js/tools/runtime.js"></script>
+
+    
+<script src="/build/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/build/js/libs/Typed.min.js"></script>
+
+  
+<script src="/build/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/build/js/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/build/js/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/build/js/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/build/js/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/build/js/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/build/js/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
