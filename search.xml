@@ -472,8 +472,8 @@
       </tags>
   </entry>
   <entry>
-    <title>OXIDIZED INTENTIONS (thefewchosen-2025)</title>
-    <url>/2025/09/03/OXIDIZED%20INTENTIONS%20(thefewchosen-2025)/</url>
+    <title>OXIDIZED INTENTIONS (TFCCTF-2025)</title>
+    <url>/2025/09/03/OXIDIZED%20INTENTIONS%20(TFCCTF-2025)/</url>
     <content><![CDATA[<h1 id="Descriptions"><a href="#Descriptions" class="headerlink" title="Descriptions"></a>Descriptions</h1><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">Can you find what lays behind this simple game ?</span><br></pre></td></tr></table></figure></div>
 
 <p>Attachments: </p>
@@ -485,13 +485,13 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/1.png"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/1.png"
                      
                 ></p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/2.png"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/2.png"
                      
                 ></p>
 <p>Basically, the app is a simple game with a <strong>score</strong> system and <strong>3 lives</strong>. When digging into the APK, I noticed two important things:</p>
@@ -538,7 +538,7 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/4.png"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/4.png"
                      
                 ></p>
 <p>Inside the function <strong><code>sub_11A4C</code></strong>, we can see a comparison being made against a hardcoded string located in the <strong><code>.rodata</code></strong> section. If the comparison fails, the code returns <code>FAKE&#123;wrong_seed&#125;</code>, otherwise the execution continues and eventually generates the flag.</p>
@@ -548,7 +548,7 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/5.png"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/5.png"
                      
                 ></p>
 <p>Oops! <strong><code>FAKE&#123;2152411021524119&#125;</code></strong> – that’s a fake flag. What went wrong?</p>
@@ -570,7 +570,7 @@
 <p> <img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/8.png"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/8.png"
                      
                 ></p>
 </li>
@@ -604,7 +604,7 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/9.png"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/9.png"
                      
                 ></p>
 <p>This confirms that patching the HACKER variable successfully bypassed the security check, allowing the correct seed to produce the real flag.</p>
