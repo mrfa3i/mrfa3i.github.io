@@ -101,7 +101,7 @@
 ]]></content>
       <categories>
         <category>CTF</category>
-        <category>Mobile Security</category>
+        <category>Mobile</category>
       </categories>
       <tags>
         <tag>Mobile</tag>
@@ -469,6 +469,158 @@
         <tag>forensics</tag>
         <tag>autopsy</tag>
         <tag>powershell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OXIDIZED INTENTIONS (thefewchosen-2025)</title>
+    <url>/2025/09/03/OXIDIZED%20INTENTIONS%20(thefewchosen-2025)/</url>
+    <content><![CDATA[<h1 id="Descriptions"><a href="#Descriptions" class="headerlink" title="Descriptions"></a>Descriptions</h1><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">Can you find what lays behind this simple game ?</span><br></pre></td></tr></table></figure></div>
+
+<p>Attachments: </p>
+<ul>
+<li>app-release.apk</li>
+</ul>
+<h2 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview:"></a>Challenge Overview:</h2><p>The Android application is built with a native library for ARM processors and is written in <strong>Kotlin</strong>, so you need to run it on an <strong><code>arm64-v8a</code></strong> environment to execute the app properly. From there, you can interact with the application and analyze how it actually works.</p>
+<p>So, I ended up running the application on my personal phone because I couldn’t find an ARM emulator in Android Studio 😅.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/1.png"
+                     
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/2.png"
+                     
+                ></p>
+<p>Basically, the app is a simple game with a <strong>score</strong> system and <strong>3 lives</strong>. When digging into the APK, I noticed two important things:</p>
+<ol>
+<li><p>The app loads a native library:<br> <code>arm64-v8a/liboxi.so</code></p>
+</li>
+<li><p>In the <strong><code>AndroidManifest.xml</code></strong>, there is an <strong>exported broadcast receiver</strong> that we can abuse:</p>
+ <div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TicketReceiver&quot;</span> <span class="attr">android:exported</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TICKET&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p> Because <code>android:exported=&quot;true&quot;</code> is set, this means any external app (or even <code>adb</code>) can send an intent with the action <strong><code>com.example.oxidized_intentions.TICKET</code></strong> and trigger the receiver.</p>
+</li>
+</ol>
+<h2 id="Source-Code-Analysis"><a href="#Source-Code-Analysis" class="headerlink" title="Source Code Analysis"></a>Source Code Analysis</h2><p>Looking into the decompiled source, we see the following relevant pieces:</p>
+<p><strong>Native class</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Native</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> Native INSTANCE = new Native();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JvmStatic</span></span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> native String getFlag(Context context, String str, String str2, int i);</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">&quot;oxi&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>This shows that the actual <strong>flag generation logic is hidden inside the native library <code>liboxi.so</code></strong> via the function <code>getFlag(...)</code>.</p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>MainActivity</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Nothing too interesting here</p>
+<p><strong>TicketReceiver</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">    String stringExtra = intent.getStringExtra(<span class="string">&quot;seed&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (stringExtra == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;Got broadcast, seed=&quot;</span> + stringExtra);</span><br><span class="line"></span><br><span class="line">    int i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (int i2 = <span class="number">0</span>; i2 &lt; stringExtra.length(); i2++) &#123;</span><br><span class="line">        i ^= stringExtra.charAt(i2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String flag = Native.getFlag(context, stringExtra, PART_J, i &amp; <span class="number">255</span>);</span><br><span class="line"></span><br><span class="line">    Toast.makeText(context, flag, <span class="number">1</span>).show();</span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;FLAG=&quot;</span> + flag);</span><br><span class="line"></span><br><span class="line">    Intent intent2 = new Intent(ACTION_FLAGGED);</span><br><span class="line">    intent2.setPackage(context.getPackageName());</span><br><span class="line">    intent2.putExtra(EXTRA_FLAG, flag);</span><br><span class="line">    context.sendBroadcast(intent2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Here’s what happens inside the <strong><code>TicketReceiver</code></strong>:</p>
+<ol>
+<li><p>It extracts the string extra <code>&quot;seed&quot;</code> from the broadcast intent.</p>
+</li>
+<li><p>If it’s missing, it returns immediately.</p>
+</li>
+<li><p>It logs the seed and computes an integer <code>i</code> by XOR’ing all the characters in the seed.</p>
+</li>
+<li><p>It then calls <code>Native.getFlag(context, seed, PART_J, i &amp; 255)</code> to generate the flag.</p>
+</li>
+<li><p>The flag is shown in a <strong>Toast</strong> and logged.</p>
+</li>
+<li><p>Finally, it broadcasts the flag inside the app.</p>
+</li>
+</ol>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Finding-the-correct-seed"><a href="#Finding-the-correct-seed" class="headerlink" title="Finding  the correct seed"></a>Finding  the correct seed</h3><p>By sending a broadcast with the correct <strong><code>seed</code></strong> value, we can trigger <code>TicketReceiver</code>, which calls into the native library to compute and reveal the flag.</p>
+<p>So now, let’s perform a <strong>static analysis</strong> of the <strong><code>liboxi.so</code></strong> library to figure out how we can determine the correct <strong><code>seed</code></strong>.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/4.png"
+                     
+                ></p>
+<p>Inside the function <strong><code>sub_11A4C</code></strong>, we can see a comparison being made against a hardcoded string located in the <strong><code>.rodata</code></strong> section. If the comparison fails, the code returns <code>FAKE&#123;wrong_seed&#125;</code>, otherwise the execution continues and eventually generates the flag.</p>
+<p>Next, we need to send the correct seed value to the <code>TicketReceiver</code> using the following command:</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed <span class="string">&quot;fe2o3rust&quot;</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/5.png"
+                     
+                ></p>
+<p>Oops! <strong><code>FAKE&#123;2152411021524119&#125;</code></strong> – that’s a fake flag. What went wrong?</p>
+<h3 id="Patching-the-HACKER-Check"><a href="#Patching-the-HACKER-Check" class="headerlink" title="Patching the HACKER Check"></a>Patching the HACKER Check</h3><p>After digging deeper into <strong><code>liboxi.so</code></strong>, I discovered that inside the function <strong><code>sub_11A4C</code></strong> there’s an additional security check: the variable <strong><code>HACKER</code></strong> must be set to <strong><code>HACKER = 1</code></strong>. I realized I could simply patch it to bypass the restriction.</p>
+<ol>
+<li><p>Decompile the APK using Apktool :</p>
+ <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS&gt; apktool d .\app<span class="literal">-release</span>.apk</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 on app-release.apk with 4 thread(s).</span><br><span class="line">I: Baksmaling classes.dex...</span><br><span class="line">I: Baksmaling classes2.dex...</span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding file<span class="literal">-resources</span>...</span><br><span class="line">I: Loading resource table from file: C:\Users\refai\AppData\Local\apktool\framework\<span class="number">1</span>.apk</span><br><span class="line">I: Decoding values */* XMLs...</span><br><span class="line">I: Decoding AndroidManifest.xml with resources...</span><br><span class="line">I: Regular manifest package...</span><br><span class="line">I: Copying assets and libs...</span><br><span class="line">I: Copying unknown files...</span><br><span class="line">I: Copying original files...</span><br><span class="line">I: Copying META<span class="literal">-INF</span>/services directory</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>Analyze <code>liboxi.so</code><br> Open <code>liboxi.so</code> using <strong>Ghidra</strong> or <strong>IntelliJ IDEA</strong> from the path <code>app-release\lib\arm64-v8a</code></p>
+</li>
+<li><p>Patch the security check<br> I modified the bytes from:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> to:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> this changes the instruction from:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">B.EQ loc_11EDC   ; E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> to:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">B.NE loc_11EDC   ; E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> <img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/8.png"
+                     
+                ></p>
+</li>
+<li><p>Rebuild and sign the APK</p>
+<ul>
+<li><p>Rebuild the patched APK using Apktool:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>&gt; apktool b .</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 with 4 thread(s).</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali folder into classes.dex...</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali_classes2 folder into classes2.dex...</span><br><span class="line">I: Checking whether resources has changed...</span><br><span class="line">I: Building resources...</span><br><span class="line">I: Copying libs... (/lib)</span><br><span class="line">I: Copying libs... (/kotlin)</span><br><span class="line">I: Copying libs... (/META<span class="literal">-INF</span>/services)</span><br><span class="line">I: Building apk file...</span><br><span class="line">I: Copying unknown files/<span class="built_in">dir</span>...</span><br><span class="line">I: Built apk into: .\dist\app<span class="literal">-release</span>.apk</span><br></pre></td></tr></table></figure></div></li>
+<li><p>Generate a self-signed certificate and sign the APK:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; keytool <span class="literal">-genkeypair</span> <span class="literal">-v</span> <span class="literal">-keystore</span> android.keystore <span class="literal">-alias</span> research_key <span class="literal">-keyalg</span> RSA <span class="literal">-keysize</span> <span class="number">2048</span> <span class="literal">-validity</span> <span class="number">10000</span></span><br><span class="line">Enter keystore password:  </span><br><span class="line">Re<span class="literal">-enter</span> new password: </span><br><span class="line">Enter the distinguished name. Provide a single dot (.) to leave a sub<span class="literal">-component</span> empty or press ENTER to use the default value <span class="keyword">in</span> braces.</span><br><span class="line">What is your first and last name?</span><br><span class="line">What is the name of your organizational unit?</span><br><span class="line">What is the name of your organization?</span><br><span class="line">What is the name of your City or Locality?</span><br><span class="line">What is the name of your State or Province?</span><br><span class="line">What is the two<span class="literal">-letter</span> country code <span class="keyword">for</span> this unit?</span><br><span class="line">Is CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown correct?</span><br><span class="line">[<span class="type">no</span>]:  yes</span><br><span class="line">Generating <span class="number">2048</span><span class="literal">-bit</span> RSA key pair and self<span class="literal">-signed</span> certificate (SHA384withRSA) with a validity of <span class="number">10</span>,<span class="number">000</span> days</span><br><span class="line">		<span class="keyword">for</span>: CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">[<span class="type">Storing</span> <span class="type">android.keystore</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; jarsigner <span class="literal">-verbose</span> <span class="literal">-sigalg</span> SHA1withRSA <span class="literal">-digestalg</span> SHA1 <span class="literal">-keystore</span> android.keystore .\app<span class="literal">-release</span>.apk research_key</span><br><span class="line">Enter Passphrase <span class="keyword">for</span> keystore: </span><br><span class="line">adding: META<span class="literal">-INF</span>/MANIFEST.MF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.SF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.RSA</span><br><span class="line">signing: AndroidManifest.xml</span><br><span class="line">signing: classes.dex</span><br><span class="line">signing: classes2.dex</span><br><span class="line">signing: kotlin/annotation/annotation.kotlin_builtins</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">&gt;&gt;&gt; Signer</span><br><span class="line">	X.<span class="number">509</span>, CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">	Signature algorithm: SHA384withRSA, <span class="number">2048</span><span class="literal">-bit</span> RSA key</span><br><span class="line">	[<span class="type">trusted</span> <span class="type">certificate</span>]</span><br><span class="line"></span><br><span class="line">jar signed.</span><br><span class="line"></span><br><span class="line">Warning:</span><br><span class="line">The signer<span class="string">&#x27;s certificate is self-signed.</span></span><br><span class="line"><span class="string">The SHA1 algorithm specified for the -digestalg option is considered a security risk and is disabled.</span></span><br><span class="line"><span class="string">The SHA1withRSA algorithm specified for the -sigalg option is considered a security risk and is disabled.</span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+</li>
+<li><p>Optimize and Finalize the APK</p>
+<ul>
+<li><p>Align the APK using zipalign:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; zipalign <span class="literal">-p</span> <span class="operator">-f</span> <span class="literal">-v</span> <span class="number">4</span> .\app<span class="literal">-release</span>.apk aligned.apk</span><br><span class="line">Verifying alignment of aligned.apk (<span class="number">4</span>)...</span><br><span class="line">	<span class="number">50</span> META<span class="literal">-INF</span>/MANIFEST.MF (OK - compressed)</span><br><span class="line">	<span class="number">3343</span> META<span class="literal">-INF</span>/RESEARCH.SF (OK - compressed)</span><br><span class="line">	<span class="number">7084</span> META<span class="literal">-INF</span>/RESEARCH.RSA (OK - compressed)</span><br><span class="line">	<span class="number">8279</span> AndroidManifest.xml (OK - compressed)</span><br><span class="line">	<span class="number">9936</span> classes.dex (OK)</span><br><span class="line"><span class="number">13497788</span> classes2.dex (OK)</span><br><span class="line">.............................</span><br><span class="line">.............................</span><br><span class="line"><span class="number">18380208</span> assets/dexopt/baseline.profm (OK)</span><br><span class="line"><span class="number">18380635</span> DebugProbesKt.bin (OK - compressed)</span><br><span class="line"><span class="number">18381491</span> kotlin<span class="literal">-tooling-metadata</span>.json (OK - compressed)</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>Sign the aligned APK with apksigner:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; apksigner sign <span class="literal">--ks</span> .\android.keystore .\aligned.apk</span><br><span class="line">WARNING: A restricted method <span class="keyword">in</span> java.lang.System has been called</span><br><span class="line">WARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil <span class="keyword">in</span> an unnamed module (file:/C:/Users/refai/AppData/Local/Android/Sdk/<span class="built_in">build-tools</span>/<span class="number">36.0</span>.<span class="number">0</span>/lib/apksigner.jar)</span><br><span class="line">WARNING: Use <span class="literal">--enable-native-access</span>=ALL<span class="literal">-UNNAMED</span> to avoid a warning <span class="keyword">for</span> callers <span class="keyword">in</span> this module</span><br><span class="line">WARNING: Restricted methods will be blocked <span class="keyword">in</span> a future release unless native access is enabled</span><br><span class="line"></span><br><span class="line">Keystore password <span class="keyword">for</span> signer <span class="comment">#1: </span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+</li>
+</ol>
+<p>After patching the APK, reinstall it on the mobile emulator to verify that it no longer displays the fake flag. Use the following command to install the aligned APK:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb install .\aligned.apk</span><br><span class="line">Performing Incremental Install</span><br><span class="line">Serving...</span><br><span class="line">All files should be loaded. Notifying the device.</span><br><span class="line">Success</span><br><span class="line">Install command complete in 2289 ms</span><br></pre></td></tr></table></figure></div>
+
+<p>Next, send the correct seed value to trigger the <code>TicketReceiver</code>:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed &quot;fe2o3rust&quot;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="FLAG"><a href="#FLAG" class="headerlink" title="FLAG"></a>FLAG</h2><p>The app now returns the correct flag:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/9.png"
+                     
+                ></p>
+<p>This confirms that patching the HACKER variable successfully bypassed the security check, allowing the correct seed to produce the real flag.</p>
+<p><strong>FLAG</strong>: <strong><code>TFCCTF&#123;167e3ce3c65387c6e981c31c39ac7839&#125;</code></strong></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+        <category>Mobile</category>
+        <category>Reverse</category>
+      </categories>
+      <tags>
+        <tag>Mobile</tag>
+        <tag>Android</tag>
+        <tag>apktools</tag>
+        <tag>ida</tag>
+        <tag>Reverse</tag>
       </tags>
   </entry>
   <entry>
